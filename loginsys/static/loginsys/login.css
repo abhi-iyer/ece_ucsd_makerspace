@@ -1,0 +1,21 @@
+.kiosk-login-form {
+    color: white;
+    margin:10px;
+    padding: 10px;
+}
+.form-box{
+    width: 100%;
+    margin-right: 20px;
+    padding: 12px 0px 12px 20px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.form-btn {
+    margin: 8px 0;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}

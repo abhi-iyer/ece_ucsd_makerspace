@@ -1,0 +1,18 @@
+<!-- index.html -->
+
+{% extends "loginsys/layout.html" %}
+{% block body %}
+
+<p>Enter your PID or Employee ID</p>
+<form class="loginsys-login-form" action="/loginsys/authorize" method="POST"> {% csrf_token %}
+      <div style="width:50%; float:left; margin-top:10px;">
+        <input class="form-box" type="text" placeholder="Enter PID" name="pid"/>
+      </div>
+      <div style="width:50%; float:left; margin-top:10px;">
+        <input class="form-box" type="text" placeholder="Enter Employee ID" name="eid" />
+      </div>
+      <div style="width:100%; float:right;margin-top:10px;">
+        <button class="form-btn" type="submit">Submit</button>
+      </div>
+</form>
+{% endblock %}
