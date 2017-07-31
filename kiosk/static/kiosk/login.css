@@ -66,6 +66,7 @@
     padding:1em;
     font-size: 1.5em;
     margin-left:20%;
+    cursor: pointer;
 }
 .qr-code {
     display:block;
