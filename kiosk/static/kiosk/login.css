@@ -1,0 +1,85 @@
+.kiosk-login-form {
+    margin:10px;
+    padding: 10px;
+    display: inline-block;
+    text-align: center;
+    width: 50%;
+}
+.form-box{
+    width: 100%;
+    padding: 0.7em;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 2em;
+}
+.form-btn {
+    margin: 8px 0;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 2em;
+    padding: 0.5em;
+}
+ 
+.intro_row{
+    width:100%;
+    height:33vh;
+    background-color:#e0ffff;
+    font-family: "Times New Roman", Times, serif;
+    color: red;
+    text-align: center;
+    font-size: 15px;
+}
+.intro_row > h1 {
+    font-size: 5em;
+    margin:0px;
+}
+.intro_row > p {
+    font-size: 3em;
+}
+.input_row{
+    width:100%;
+    height:33vh;
+    background-color:white;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+    color:black;
+    text-align: center;
+}
+.input_row > p {
+    font-size: 2em;
+    color: #ff8c00;
+}
+.help_row{
+    width:100%;
+    height:33vh;
+    background-color:#add8e6;
+    font-family: "Times New Roman", Times, serif;
+    color:purple;
+    font-size: 15px;
+}
+.ta-assist {
+    background-color:black;
+    color:white;
+    padding:1em;
+    font-size: 1.5em;
+    margin-left:20%;
+}
+.qr-code {
+    display:block;
+    height:20vh;
+    margin-left:20%;
+}
+#table-heading {
+    font-size:2em;
+}
+#table-left {
+    width: 50%;
+    padding-right:1em;
+}
+#table-right {
+    width: 50%;
+    padding-left: 1em;
+}

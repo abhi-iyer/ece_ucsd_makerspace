@@ -1,0 +1,41 @@
+<!-- index.html -->
+
+{% extends "kiosk/layout.html" %}
+{% block body %}
+
+<section>
+<div class="intro_row">
+<h1>Welcome to ECE Makerspace</h1>
+<p>For Students and Faculty, to enter, please scan your ID card by flashing through barcode reader or magnetic stripe reader. </p>
+<div>
+</section>
+
+<section class="input_row">
+<p>Kindly enter your PID and submit if you are not carrying your UCSD ID</p>
+<form class="kiosk-login-form" action="/kiosk/authorize" method="POST"> {% csrf_token %}
+      <div>
+        <input class="form-box" type="text" placeholder="Enter PID" name="pid"/>
+      </div>
+      <div>
+        <button class="form-btn" type="submit">Submit</button>
+      </div>
+</form>
+
+</section>
+
+<section class="help_row">
+<table>
+<thead><tr id="table-heading"> 
+    <th id="table-left"> If a visitor, you may request TA assistance for lab tour. </th>
+    <th id="table-right"> For gaining access to Makerspace, please fill it out the form at the following URL, http://www.google.com </th>
+</tr></thead>
+<tbody><tr>
+    <td><form action="/kiosk/ta-assist" method = "POST" > {% csrf_token %}
+    <button class="ta-assist"> Request TA assistance </button></td>
+    {% load static %}
+    <td><img class="qr-code" src = "{% static "kiosk/images/qrcode.jpeg" %}" alt="QR code"/> </td>
+</tr></tbody>
+</table>
+
+</section>
+{% endblock %}

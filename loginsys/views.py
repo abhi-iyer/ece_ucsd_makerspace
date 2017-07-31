@@ -10,10 +10,12 @@ def index(request):
 def thanks(request):
 	return HttpResponse('Thank You!')
 
-def queryDB(pid=Student.objects.get(pid)):
-	with connection.cursor() as cursor:
-		cursor.execute("SELECT * FROM students WHERE pid = '%s'" %pid)
-		row = cursor.fetchone()
-		while row is not None:
-			print(row)	# typically only one row should be printed, as only one person has this unique PID
-			row = cursor.fetchone()
+def queryDB(request):
+	return HttpResponse('Thank You!')
+#def queryDB(pid=Student.objects.get(pid)):
+#	with connection.cursor() as cursor:
+#		cursor.execute("SELECT * FROM students WHERE pid = '%s'" %pid)
+#		row = cursor.fetchone()
+#		while row is not None:
+#			print(row)	# typically only one row should be printed, as only one person has this unique PID
+#			row = cursor.fetchone()

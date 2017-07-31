@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^loginsys/', include('loginsys.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^kiosk/', include('kiosk.urls')),
 ]
