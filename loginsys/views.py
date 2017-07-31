@@ -10,3 +10,7 @@ def index(request):
 def student_info(request, pid):
     student = get_student(pid)
     return HttpResponse(student)
+
+def thanks(request):
+	return HttpResponse('Thank You!')
+
