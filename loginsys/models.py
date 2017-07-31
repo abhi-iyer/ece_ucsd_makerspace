@@ -4,7 +4,7 @@ from django.db import models
 
 class Student(models.Model):
 	last_name = models.CharField(max_length=20, null=True)
-	first_name = models.charField(max_length=20, null=True)
+	first_name = models.CharField(max_length=20, null=True)
 	pid = models.CharField(max_length=9, null=True)
 	employee_num = models.CharField(max_length=20, null=True)
 	class_org = models.CharField(max_length=20, null=True)
