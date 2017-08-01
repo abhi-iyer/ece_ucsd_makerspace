@@ -7,10 +7,25 @@ $(document).ready(function() {
 
     $('.page.dimmer').dimmer('show');
 
-    setTimeout(function() {
-      $('#my_div').load('/kiosk/authorize');
-      $('.page.dimmer').dimmer('hide');
-    }, 2000);
+// ONE OPTION...
+    // $('#my_div').load('/kiosk/authorize', function(response, status) {
+    //   setTimeout(function() {
+    //    $('.page.dimmer').dimmer('hide');
+    //   }, 2000);
+    // });
+
+// ANOTHER OPTION...
+    // $.get('/kiosk/authorize', function(result) {
+    //   $('#my_div').html(result);
+    //   // $('#my_div').text(result);
+    //   $('.page.dimmer').dimmer('hide');
+    // }).fail(function() {
+    //   // handle error
+    // }).done(function() {
+    //   // execute some more code
+    // }).always(function() {
+    //   // log that get was executed
+    // });
 
     return false;
   });
