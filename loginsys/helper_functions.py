@@ -6,9 +6,9 @@ def get_student(pid):
         return student.first_name + ' ' + student.last_name
 
 def card_parse(input):
-	if (input[0] == ';'):
-		# magnetic-strip card swiper's rules
-	        student_pid = input[2:11]
-		return student_pid
+    if (input[0] == ';'):
+        # magnetic-strip card swiper's rules
+        student_pid = input[2:11]
+        return student_pid
 
-	# else parse with barcode parser's rules
+    # else parse with barcode parser's rules

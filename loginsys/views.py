@@ -6,9 +6,7 @@ def index(request):
 	context = {'title': 'Main Login'}
 	return render(request, 'loginsys/index.html', context)
 
-def student_info(request, pid):
-    student = get_student(pid)
-    return HttpResponse(student)
-
-def parse_pid(request, pid):
-    return HttpResponse(card_parse(pid))
+def student_info(request):
+    if (request.method == "POST"):
+        student = get_student(card_parse(request.POST['pid']))
+        return HttpResponse(student)
