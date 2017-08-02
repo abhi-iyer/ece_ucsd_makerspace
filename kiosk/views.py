@@ -6,7 +6,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     context = {'title':'Main Login'}
-    return render(request,'kiosk/index.html',context)
+    return render(request,'kiosk/index_semantic.html',context)
 
-def thanks(request):
-    return HttpResponse('Thank You')
+def auth(request):
+    return HttpResponse('Thank You, Please Enter')
+
+def unauth(request):
+    return HttpResponse('Error, DO NOT ENTER')
+
+def tacall(request):
+    return HttpResponse('TA on way')
