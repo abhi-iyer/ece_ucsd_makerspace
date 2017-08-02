@@ -1,0 +1,53 @@
+<!-- index.html -->
+
+{% extends "kiosk/layout.html" %}
+{% block body %}
+{% load static %}
+
+<div class='ui page dimmer'>
+  <div class="content">
+    <div class="center">Hello</div>
+  </div>
+</div>
+
+<main class="">
+
+  <section>
+    <div class="ui center aligned container intro">
+      <h1 class="ui red huge header">Welcome to ECE Makerspace</h1>
+      <h3 class="ui orange large header">For Students and Faculty, to enter, please scan your ID card by flashing through barcode reader or magnetic stripe reader. </h3>
+    </div>
+  </section>
+
+  <section class=" ui center aligned container intro">
+  <!--<form action='/kiosk/authorize' method='POST'> -->
+  <form action='/loginsys/student_info' method='POST'> {% csrf_token %}
+    <div class = "ui massive form" >
+      <div class = "reduired field" >
+        <label> Kindly enter your PID and submit if you are not carrying your UCSD ID </label>
+        <input placeholder = "Enter PID" type = "text" name='pid'>
+      </div>
+      <button class="ui primary submit button"> Submit </button>
+    </div>
+  </form>
+  </section>
+
+  <section class="ui center aligned container intro">
+  <form action='/kiosk/ta-call' method='POST'> {% csrf_token %}
+    <div class="ui vertically divided grid olive">
+      <div class="two column row">
+        <div class="column">
+          <p class="lastrow_para">If a visitor, you may request TA assistance for lab tour.</p>
+          <button class="huge ui brown fluid button" id="ta_call" >Request TA Assistance</button>         
+        </div>
+        <div class="column">
+          <p class="lastrow_para">For gaining access to Makerspace, please fill it out the form at the following URL, http://www.gotourl.com</p>
+          <img class="ui centered small image" src = "{% static "kiosk/images/qrcode.jpeg" %}" alt="QR code"/>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</main>
+
+{% endblock %}
