@@ -4,5 +4,15 @@
 
 .lastrow_para {
   color:olive;
-  font-size:1em;
-} 
+  font-size:1.2em;
+}
+
+.page_hide {
+  display: none;
+}
+/* The alert message box */
+.alert {
+    /*background-color: #f44336;  Red */
+    color: white;
+    font-size: 4em;
+}

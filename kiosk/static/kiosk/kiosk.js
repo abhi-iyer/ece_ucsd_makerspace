@@ -1,41 +1,76 @@
 $(document).ready(function() {
-  $('#ta_call').on('click', function(event) {
+  $('#check_user').on('click', function(event) {
     event.preventDefault();
     event.stopPropagation();
-
-    $('.page.dimmer').dimmer('show');
-//    $.get('/kiosk/authorize', function(result) {
-//      $(document).html(result);
-//   });
-// another option using AJAX    
-//    $.ajax( {
-//      type: 'GET',
-//      url : '/target',
-//      data : {},
-//      success : function(content) {
-//        $(location).attr('href','authorize');
-//      }
-//      error: function(content) {
-//        $(location).attr('href','unauthorize');
-//      }
-//      complete: function() {
-//        //could do something here as well  
-//      }
-//    });
+    $('.input_check').addClass('active');
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    var input = $('input[name=pid]').val();
+    $(this).closest('form').find("input[name=pid], textarea").val("");
+    console.log(input);
+    $.ajax( {
+      type: 'POST',
+      url : '/loginsys/student_info',
+      data : {
+        'pid' : input,
+        'csrfmiddlewaretoken':csrftoken,
+      },
+      success : function(content) {
+        console.log(content);
+        console.log('success');
+        resp = JSON.parse(content);
+        console.log(resp);
+        console.log(resp['status']);
+        if(resp['status'] == 'OK') {
+          //data = {status: "OK", data: "First Last"}
+          $('#username').text(resp['data']);
+          $('.input_check').removeClass('active');
+          $('#welcome_page').fadeOut('fast');
+          $('#authorized_page').fadeIn('slow');
+          setInterval(function() {
+            $('#authorized_page').fadeOut('slow');
+            $('#welcome_page').fadeIn('slow');
+          }, 5000);
+        } else {
+          if(resp['status'] == 'ERROR') {
+            //data = {status: "ERROR", data: "Invalid CARD"}
+            $('.alert').text(resp['data']);
+          } else { 
+            //data = {status: "NE", data: "Unauthorized"}
+            $('.alert').text('YOU ARE UNAUTHROIZED, KINDLY GET AUTHORIZATION FIRST');
+          }
+          $('.input_check').removeClass('active');
+          $('.input_err').addClass('active');
+          setInterval(function() {
+            //$('.alert').fadeOut('slow');
+            $('.input_err').removeClass('active');
+          }, 5000);
+        }
+      },
+      error: function(content) {
+        console.log('failure');
+        console.log(content);
+      },
+      complete: function() {
+      }
+    });
 
 // another Option
-//    var input = $('input[name=pid]').val();
-//    console.log(input)
-//    var url = '';
-//    $.post (url, {pid: input}, function (data) {
+//    var url = '/loginsys/student_info';
+//    $.post (url, {'pid': input, 'csrfmiddlewaretoken': csrftoken , }, function (data) {
 //      console.log(data); 
 //      if (data == 'succeess') {
-//        $(location).attr('href','kiosk/authorize');
+//        console.log(data);
+//        console.log('success');
+//        $(document).fadeOut('slow');
+//       //$(location).attr('href','kiosk/authorize');
 //      } else {
-//        $(location).attr('href','kiosk/unauthorize');
+//        console.log(data);
+//        console.log('failure');
+//        $(document).fadeOut('slow');
+//        //$(location).attr('href','kiosk/unauthorize');
 //      }
 //    });
-
+//
 // ONE OPTION... (i don't want to have static timer)
      //$('#my_div').load('/kiosk/authorize', function(response, status) {
      //$(document).load('/kiosk/authorize', function(response, status) {
@@ -61,3 +96,16 @@ $(document).ready(function() {
   });
 
 });
+function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+
+//    $.ajaxSetup({
+//    beforeSend: function(xhr, settings) {
+//      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+//        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+//      }
+//    }
+//    });

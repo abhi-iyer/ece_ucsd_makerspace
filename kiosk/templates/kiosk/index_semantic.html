@@ -4,13 +4,19 @@
 {% block body %}
 {% load static %}
 
-<div class='ui page dimmer'>
+<!-- To display error message on top of form-->
+<div class='ui page dimmer input_err'>
   <div class="content">
-    <div class="center">Hello</div>
+    <div class="alert"></div>
   </div>
 </div>
 
-<main class="">
+<!-- To display loading page everyt time entry is submitted-->
+<div class="ui page dimmer input_check">
+  <div class="ui text loader"> Checking your Entry </div>
+</div> 
+
+<main id="welcome_page">
 
   <section>
     <div class="ui center aligned container intro">
@@ -20,16 +26,16 @@
   </section>
 
   <section class=" ui center aligned container intro">
-  <!--<form action='/kiosk/authorize' method='POST'> -->
-  <form action='/loginsys/student_info' method='POST'> {% csrf_token %}
+  <form action='' method='POST'> {% csrf_token %}
     <div class = "ui massive form" >
-      <div class = "reduired field" >
+      <div class = "required field" >
         <label> Kindly enter your PID and submit if you are not carrying your UCSD ID </label>
         <input placeholder = "Enter PID" type = "text" name='pid'>
       </div>
-      <button class="ui primary submit button"> Submit </button>
+      <button class="ui primary submit button" id="check_user"> Submit </button>
     </div>
   </form>
+  
   </section>
 
   <section class="ui center aligned container intro">
@@ -48,6 +54,47 @@
     </div>
   </form>
 
+</main>
+
+<main id="authorized_page" class="page_hide">
+
+  <section>
+    <div class="ui center aligned container intro">
+      <h1 class="ui red huge header">Welcome <span id='username'></span>, Please ENTER</h1>
+      <h3 class="ui orange large header">Kindly enter the lab in next 10 seconds. </h3>
+    </div>
+  </section>
+
+  <section class=" ui center aligned container intro">
+    <div class="ui vertically divided grid olive">
+      <div class="two column row">
+        <div class="column">
+          <p class="lastrow_para">TA 1: First_Name Last_Name</p>
+          <img class="ui centered small image" src = "{% static "kiosk/images/tyrion_ta.jpeg" %}" alt="QR code"/>
+        </div>
+        <div class="column">
+          <p class="lastrow_para">TA 2: First_Name Last_Name</p>
+          <img class="ui centered small image" src = "{% static "kiosk/images/sansa_ta.jpeg" %}" alt="QR code"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ui center aligned container intro">
+  <div class="ui center aligned container intro">
+    <h1 class="ui red huge header">Please Remember</h1>
+    <ol class="ui list">
+      <li value="*">No FOOD including
+        <ol>
+          <li value="-">Covered Coffee</li>
+          <li value="-">Covered Food</li>
+          <li value="-">Snacks</li>
+        </ol>
+      </li>
+      <li value="*">Be curteous to TA</li>
+    </ol>
+  </div>
+  </section>
 </main>
 
 {% endblock %}
