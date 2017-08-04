@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'loginsys',
     'kiosk.apps.KioskConfig',
+    'django_cron',
 ]
 
 MIDDLEWARE = [

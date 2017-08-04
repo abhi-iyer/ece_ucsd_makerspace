@@ -18,6 +18,10 @@ def student_info(request):
             student = get_student(pid)
             if student != 'NE' :
               data = {'status':'OK', 'data':student}
+
+              num_people = request.session.get('num_people', 0)
+              request.session['num_people'] = num_people+1
+
               return HttpResponse(json.dumps(data))
             else:
               data = {'status':'NE', 'data':''}
