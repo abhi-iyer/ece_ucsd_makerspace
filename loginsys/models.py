@@ -22,6 +22,9 @@ class AdminInfo(models.Model):
 
 class Log(models.Model):
         student = models.ForeignKey(Student)
-        login = models.DateTimeField('Log Into Lab')
-        logout = models.DateTimeField('Log Out of Lab')
+        date = models.DateTimeField('Date')
+        users = models.IntegerField('Num of users')
+
+        # login = models.DateTimeField('Log Into Lab')
+        # logout = models.DateTimeField('Log Out of Lab')
 
