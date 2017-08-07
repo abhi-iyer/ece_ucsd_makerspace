@@ -52,6 +52,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CRON_CLASSES = [
+    "loginsys.MyCron.MyCronJob",
+]
+
 ROOT_URLCONF = 'ece_ucsd_makerspace.urls'
 
 TEMPLATES = [
