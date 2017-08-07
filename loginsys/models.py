@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-
 from django.db import models
+from datetime import datetime
 
 class Student(models.Model):
         last_name = models.CharField(max_length=20, null=True)
@@ -21,10 +21,13 @@ class AdminInfo(models.Model):
         laser_train = models.DateTimeField('Laser Cutter')
 
 class Log(models.Model):
-        student = models.ForeignKey(Student)
+        # student = models.ForeignKey(Student)
         date = models.DateTimeField('Date')
         users = models.IntegerField('Num of users')
 
+        def create(cls, d, u):
+            log = cls(date = d, users=u)    
+            return log
         # login = models.DateTimeField('Log Into Lab')
         # logout = models.DateTimeField('Log Out of Lab')
 
