@@ -1,6 +1,9 @@
 .intro {
   height:33vh;
 }
+.ta_intro {
+  height:50vh;
+}
 
 .lastrow_para {
   color:olive;
@@ -13,6 +16,12 @@
 /* The alert message box */
 .alert {
     /*background-color: #f44336;  Red */
-    color: white;
-    font-size: 4em;
+  color: white;
+  font-size: 4em;
+}
+.grey_bckgnd {
+  background-color:#ecf0f1;
+}
+.ui.header.paddd {
+  padding: 30px;
 }
