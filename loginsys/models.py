@@ -20,31 +20,42 @@ class AdminInfo(models.Model):
         laser_train = models.DateTimeField('Laser Cutter')
 
 class AdminLog(models.Model):
-        student = models.ForeignKey(Student)
+        # student = models.ForeignKey(Student)
+        last_name = models.CharField(max_length=20, null=True)
+        first_name = models.CharField(max_length=20, null=True)
+        pid = models.CharField(max_length=9, null=True)
+        error = models.BooleanField(default=False)        
+ 
         date = models.DateTimeField()
         
-        SUCCESS='SUCC'
-        FAILURE='FAIL'
+        SUCCESS="SUCC"
+        FAILURE="FAIL"
         SUSPENDED="SUSP"
         INVALID="INVA"
         
         
         SUCCESS_CHOICES = (
             (SUCCESS, "Success"),
-            (FAILURE, "Student Not Found"),
+            (FAILURE, "Student Not Found in Database"),
             (SUSPENDED, "Access Revoked"),
-            (INVALID, "Invalid Card"),
+            (INVALID, "Invalid ID Card"),
         )        
 
-        success = models.CharField(
+        login_status = models.CharField(
             max_length=4,
             choices=SUCCESS_CHOICES,
             default=SUCCESS,        
         )
         
         def __str__(self):
-            return "%s, %s" % (self.student.last_name, self.student.first_name)
-
+            if (self.error != True):
+                return "Success for %s, %s" % (self.last_name, self.first_name)
+            elif (self.login_status == "FAIL"):
+                return "Student Not Found in Database"
+            elif (self.login_status == "SUSP"):
+                return "Access Revoked for %s, %s" % (self.last_name, self.first_name)
+            elif (self.login_status == "INVA"):
+                return "Invalid ID Card"
        # def create(cls, student, date, success):
         #    log = cls(student_id=student, date=date, success=success)    
          #   return log

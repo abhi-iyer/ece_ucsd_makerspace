@@ -23,29 +23,29 @@ def student_info(request):
               if (student.suspended == False): # student is not suspended
                 data = {'status':'OK', 'data':student.first_name + " " + student.last_name}
                 
-                log = AdminLog(student=student, date=timezone.now(), success=AdminLog.SUCCESS)
+                log = AdminLog(last_name=student.last_name, first_name=student.first_name, pid=student.pid, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()     
   
                 return HttpResponse(json.dumps(data))
               else:  # student is suspended
                 data = {'status':'NOK', 'data':student.first_name + " " + student.last_name + " is suspended"}
                 
-                log = AdminLog(student=student, date=timezone.now(), success=AdminLog.SUSPENDED)
+                log = AdminLog(error=True, last_name=student.last_name, first_name=student.first_name, pid=student.pid, date=timezone.now(), login_status=AdminLog.SUSPENDED)
                 log.save()
                 
-                return HttpRequest(json.dumps(data))                
+                return HttpResponse(json.dumps(data))                
 
             else: # student not found in data base
               data = {'status':'NE', 'data':''}
               
-              log = AdminLog(student=None, date=timezone.now(), success=AdminLog.FAILURE)
+              log = AdminLog(error=True, date=timezone.now(), login_status=AdminLog.FAILURE)
               log.save()
             
               return HttpResponse(json.dumps(data))
         else:
             data = {'status':'ERROR', 'data': 'Invalid card. Please use an official Student ID card issued by UC San Diego.'}
             
-            log = AdminLog(student=None, date=timezone.now(), success=AdminLog.INVALID)
+            log = AdminLog(error=True, date=timezone.now(), login_status=AdminLog.INVALID)
             log.save()
             
             return HttpResponse(json.dumps(data))
