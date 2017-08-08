@@ -1,8 +1,8 @@
-from .models import Student
-def get_student(pid):
+from .models import User
+def get_user(pid):
 	try:
-		student = Student.objects.get(pid=pid)
-		return student
+		user = User.objects.get(pid=pid)
+		return user
 	except:
 		return None #No entry
 
@@ -10,8 +10,8 @@ def card_parse(input):
 	if input:
 		if ( input[0] == ';' ):
 			# magnetic-strip card swiper's rules
-			student_pid = input[2:11]
-			return student_pid
+			user_pid = input[2:11]
+			return user_pid
 		else:
 			return 0
 

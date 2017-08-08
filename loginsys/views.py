@@ -11,31 +11,31 @@ def index(request):
     context = {'title': 'Main Login'}
     return render(request, 'loginsys/index.html', context)
 
-def student_info(request):
+def user_info(request):
     if (request.method == "POST"):
         pid = card_parse(request.POST['pid'])
         print ('pid caught is ', pid);
         time.sleep(3)
         if (pid != 0):
-            student = get_student(pid)
-            if student != None: # student found in database
+            user = get_user(pid)
+            if user != None: # user found in database
               
-              if (student.suspended == False): # student is not suspended
-                data = {'status':'OK', 'data':student.first_name + " " + student.last_name}
-                
-                log = AdminLog(last_name=student.last_name, first_name=student.first_name, pid=student.pid, date=timezone.now(), login_status=AdminLog.SUCCESS)
+              if (user.suspended == False): # user is not suspended
+                data = {'status':'OK', 'data':user.first_name + " " + user.last_name}                
+ 
+                log = AdminLog(administrator = user.administrator, last_name=user.last_name, first_name=user.first_name, pid=user.pid, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()     
   
                 return HttpResponse(json.dumps(data))
-              else:  # student is suspended
-                data = {'status':'NOK', 'data':student.first_name + " " + student.last_name + " is suspended"}
+              else:  # user is suspended
+                data = {'status':'NOK', 'data':user.first_name + " " + user.last_name + " is suspended"}
                 
-                log = AdminLog(error=True, last_name=student.last_name, first_name=student.first_name, pid=student.pid, date=timezone.now(), login_status=AdminLog.SUSPENDED)
+                log = AdminLog(error=True, administrator = user.administrator, last_name=user.last_name, first_name=user.first_name, pid=user.pid, date=timezone.now(), login_status=AdminLog.SUSPENDED)
                 log.save()
                 
                 return HttpResponse(json.dumps(data))                
 
-            else: # student not found in data base
+            else: # user not found in data base
               data = {'status':'NE', 'data':''}
               
               log = AdminLog(error=True, date=timezone.now(), login_status=AdminLog.FAILURE)

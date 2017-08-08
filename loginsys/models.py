@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 from datetime import datetime
 
-class Student(models.Model):
+class User(models.Model):
         last_name = models.CharField(max_length=20, null=True)
         first_name = models.CharField(max_length=20, null=True)
         pid = models.CharField(max_length=9, null=True)
@@ -10,22 +10,20 @@ class Student(models.Model):
         dept = models.CharField(max_length=20, null=True)
         class_year = models.CharField(max_length=15, null=True)
         suspended = models.BooleanField(default=False)
-
+        
+        administrator = models.BooleanField(default=False)
+             
         def __str__(self):
-            return '%s, %s' % (self.last_name, self.first_name)
-
-class AdminInfo(models.Model):
-        student = models.ForeignKey(Student)
-        printer_train = models.DateTimeField('3D-Printer')
-        laser_train = models.DateTimeField('Laser Cutter')
+            return '%s %s' % (self.first_name, self.last_name)
 
 class AdminLog(models.Model):
-        # student = models.ForeignKey(Student)
         last_name = models.CharField(max_length=20, null=True)
         first_name = models.CharField(max_length=20, null=True)
         pid = models.CharField(max_length=9, null=True)
         error = models.BooleanField(default=False)        
- 
+        
+        administrator = models.BooleanField(default=False)
+        
         date = models.DateTimeField()
         
         SUCCESS="SUCC"
@@ -36,7 +34,7 @@ class AdminLog(models.Model):
         
         SUCCESS_CHOICES = (
             (SUCCESS, "Success"),
-            (FAILURE, "Student Not Found in Database"),
+            (FAILURE, "User Not Found in Database"),
             (SUSPENDED, "Access Revoked"),
             (INVALID, "Invalid ID Card"),
         )        
@@ -49,13 +47,16 @@ class AdminLog(models.Model):
         
         def __str__(self):
             if (self.error != True):
-                return "Success for %s, %s" % (self.last_name, self.first_name)
+                if (self.administrator == True):
+                    return "TA %s %s logged in successfully" % (self.first_name, self.last_name)
+                else:
+                    return "Student %s %s logged in successfully" % (self.first_name, self.last_name)
             elif (self.login_status == "FAIL"):
-                return "Student Not Found in Database"
+                return "User not found in database"
             elif (self.login_status == "SUSP"):
-                return "Access Revoked for %s, %s" % (self.last_name, self.first_name)
+                if (self.administrator == True):
+                    return "Access revoked for TA %s %s" % (self.first_name, self.last_name)
+                else:
+                    return "Access revoked for Student %s %s" % (self.first_name, self.last_name)
             elif (self.login_status == "INVA"):
-                return "Invalid ID Card"
-       # def create(cls, student, date, success):
-        #    log = cls(student_id=student, date=date, success=success)    
-         #   return log
+                return "Invalid ID card"

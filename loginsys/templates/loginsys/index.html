@@ -4,7 +4,7 @@
 {% block body %}
 
 <p>Enter your PID or Employee ID</p>
-<form class="loginsys-login-form" action="/loginsys/student_info" method="POST"> {% csrf_token %}
+<form class="loginsys-login-form" action="/loginsys/user_info" method="POST"> {% csrf_token %}
       <div style="width:50%; float:left; margin-top:10px;">
         <input class="form-box" type="text" placeholder="Enter PID" name="pid"/>
       </div>
