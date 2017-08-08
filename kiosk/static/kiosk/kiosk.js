@@ -37,9 +37,10 @@ $(document).ready(function() {
           $('#username').text(resp['data']);
           $('#welcome_page').fadeOut('fast');
           $('#authorized_page').removeClass('page_hide');
-          setInterval(function() {
+          setTimeout(function() {
             $('#authorized_page').addClass('page_hide');
             $('#welcome_page').fadeIn('slow');
+            $('#username').empty();
           },5000);
         } else {
           $('.text.loader').addClass('disabled');
