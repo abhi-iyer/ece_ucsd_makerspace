@@ -1,0 +1,43 @@
+{% load static %}
+
+<main id="authorized_page">
+
+  <section>
+    <div class="ui center aligned container intro">
+      <h1 class="ui orange huge header">Welcome <span id='username'></span>, Please ENTER</h1>
+      <h3 class="ui orange large header">Kindly enter the lab in next 10 seconds. </h3>
+    </div>
+  </section>
+
+  <section class=" ui center aligned container intro">
+    <div class="ui vertically divided grid olive">
+      <div class="two column row">
+        <div class="column">
+          <p class="lastrow_para">TA 1: First_Name Last_Name</p>
+          <img class="ui centered small image" src = "{% static "kiosk/images/tyrion_ta.jpeg" %}" alt="QR code"/>
+        </div>
+        <div class="column">
+          <p class="lastrow_para">TA 2: First_Name Last_Name</p>
+          <img class="ui centered small image" src = "{% static "kiosk/images/sansa_ta.jpeg" %}" alt="QR code"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ui center aligned container intro">
+  <div class="ui center aligned container intro">
+    <h1 class="ui red huge header">Please Remember</h1>
+    <ol class="ui list">
+      <li value="*">No FOOD including
+        <ol>
+          <li value="-">Covered Coffee</li>
+          <li value="-">Covered Food</li>
+          <li value="-">Snacks</li>
+        </ol>
+      </li>
+      <li value="*">Be curteous to TA</li>
+    </ol>
+  </div>
+  </section>
+</main>
+

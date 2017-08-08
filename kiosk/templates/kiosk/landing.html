@@ -1,0 +1,41 @@
+{% load static %}
+
+<main id="welcome_page">
+  <section>
+    <div class="ui center aligned container intro grey_bckgnd">
+      <h1 class="ui orange huge header paddd">Welcome to ECE Makerspace</h1>
+      <h3 class="ui orange large header">For Students and Faculty, to enter, please scan your ID card by flashing through barcode reader or magnetic stripe reader. </h3>
+    </div>
+  </section>
+
+  <section class=" ui center aligned container intro">
+  <form action='' method='POST'> {% csrf_token %}
+    <div class = "ui massive form" >
+      <div class = "required field" >
+        <label> Kindly enter your PID and submit if you are not carrying your UCSD ID </label>
+        <input placeholder = "Enter PID" type = "text" name='pid'>
+      </div>
+      <button class="ui primary submit button" id="check_user"> Submit </button>
+    </div>
+  </form>
+
+  </section>
+
+  <section class="ui center aligned container intro grey_bckgnd">
+  <form action='kiosk/authorize' method='POST'> {% csrf_token %}
+    <div class="ui vertically divided grid olive">
+      <div class="two column row">
+        <div class="column">
+          <p class="lastrow_para">If a visitor, you may request TA assistance for lab tour.</p>
+          <button class="huge ui brown fluid button submit" id="ta_call" >Request TA Assistance</button>
+        </div>
+        <div class="column">
+          <p class="lastrow_para">For gaining access to Makerspace, please fill it out the form at the following URL, http://www.gotourl.com</p>
+          <img class="ui centered small image" src = "{% static "kiosk/images/qrcode.jpeg" %}" alt="QR code"/>
+        </div>
+      </div>
+    </div>
+  </form>
+  </section>
+</main>
+
