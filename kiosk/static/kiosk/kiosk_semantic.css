@@ -1,15 +1,25 @@
 .intro {
   height:33vh;
 }
-.ta_intro {
-  height:50vh;
+.ta_intro_66 {
+  height:66vh;
 }
 
+.ta_intro_33 {
+  height:33vh;
+}
+
+.ta_font {
+  font-size:1.2em;
+}
 .lastrow_para {
   color:olive;
   font-size:1.2em;
 }
 
+li {
+  color:olive;
+}
 .page_hide {
   display: none;
 }
@@ -21,7 +31,4 @@
 }
 .grey_bckgnd {
   background-color:#ecf0f1;
-}
-.ui.header.paddd {
-  padding: 30px;
 }
