@@ -18,9 +18,8 @@ def user_info(request):
         time.sleep(3)
         if (pid != 0):
             user = get_user(pid)
-            if user != None: # user found in database
-              
-              if (user.suspended == False): # user is not suspended
+            if user != None: # user found in database      
+              if (user.suspended != True): # user is not suspended
                 data = {'status':'OK', 'data':user.first_name + " " + user.last_name}                
  
                 log = AdminLog(administrator = user.administrator, last_name=user.last_name, first_name=user.first_name, pid=user.pid, date=timezone.now(), login_status=AdminLog.SUCCESS)
@@ -30,7 +29,7 @@ def user_info(request):
               else:  # user is suspended
                 data = {'status':'NOK', 'data':user.first_name + " " + user.last_name + " is suspended"}
                 
-                log = AdminLog(error=True, administrator = user.administrator, last_name=user.last_name, first_name=user.first_name, pid=user.pid, date=timezone.now(), login_status=AdminLog.SUSPENDED)
+                log = AdminLog(suspended=True, administrator = user.administrator, last_name=user.last_name, first_name=user.first_name, pid=user.pid, date=timezone.now(), login_status=AdminLog.SUSPENDED)
                 log.save()
                 
                 return HttpResponse(json.dumps(data))                
