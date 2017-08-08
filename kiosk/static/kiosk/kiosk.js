@@ -18,7 +18,7 @@ $(document).ready(function() {
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     $.ajax( {
       type: 'POST',
-      url : '/loginsys/student_info',
+      url : '/loginsys/user_info',
       data : {
         'pid' : input,
         'csrfmiddlewaretoken':csrftoken,
@@ -48,7 +48,7 @@ $(document).ready(function() {
             $('.alert').text(resp['data']);
           } else { 
             //data = {status: "NE", data: "Unauthorized"}
-            $('.alert').text('YOU ARE UNAUTHROIZED, KINDLY GET AUTHORIZATION FIRST');
+            $('.alert').text('YOU ARE UNAUTHORIZED, KINDLY GET AUTHORIZATION FIRST');
           }
           setInterval(function() {
             $('.alert').empty();
@@ -87,7 +87,7 @@ function csrfSafeMethod(method) {
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 // another Option
-//    var url = '/loginsys/student_info';
+//    var url = '/loginsys/user_info';
 //    $.post (url, {'pid': input, 'csrfmiddlewaretoken': csrftoken , }, function (data) {
 //      console.log(data); 
 //      if (data == 'succeess') {
