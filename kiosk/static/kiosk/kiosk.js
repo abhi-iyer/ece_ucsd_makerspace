@@ -1,6 +1,7 @@
 $(document).ready(function() {
   console.log( "ready!" );
   $('#check_user').on('click', function(event) {
+    console.log('caught check_user')
     event.preventDefault();
     event.stopPropagation();
     $('#input_null').empty();
@@ -13,8 +14,8 @@ $(document).ready(function() {
     } else {
       $('#input_null').empty();
     }
-    console.log('caught check_user')
     $('.page.dimmer').addClass('active');
+    console.log('dimmer ON, .page.dimmer active');
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     $.ajax( {
       type: 'POST',
@@ -32,6 +33,7 @@ $(document).ready(function() {
         if(resp['status'] == 'OK') {
           //data = {status: "OK", data: "First Last"}
           $('.page.dimmer').removeClass('active');
+          console.log('dimmer OFF, .page.dimmer remove active');
           $('#username').text(resp['data']);
           $('#welcome_page').fadeOut('fast');
           $('#authorized_page').removeClass('page_hide');
@@ -41,19 +43,24 @@ $(document).ready(function() {
           },5000);
         } else {
           $('.text.loader').addClass('disabled');
+          console.log('dimmer still ON, .text.loader add disabled');
           if(resp['status'] == 'ERROR') {
             //data = {status: "ERROR", data: "Invalid CARD"}
             $('.alert').text(resp['data']);
+            console.log('Added ALERT text');
           } else if (resp['status'] == 'NOK') {
             $('.alert').text(resp['data']);
+            console.log('Added ALERT text');
           } else { 
             //data = {status: "NE", data: "Unauthorized"}
             $('.alert').text('YOU ARE UNAUTHORIZED, KINDLY GET AUTHORIZATION FIRST');
+            console.log('Added ALERT text');
           }
-          setInterval(function() {
+          setTimeout(function() {
             $('.alert').empty();
             $('.text.loader').removeClass('disabled');
             $('.page.dimmer').removeClass('active');
+            console.log("alert EMPTY'; .text.loader. remove disabled ; .page.dimmer remove active");
           }, 5000);
         }
       },
@@ -73,7 +80,7 @@ $(document).ready(function() {
     event.stopPropagation();
     $('#welcome_page').fadeOut('fast');
     $('#ta_page').removeClass('page_hide');
-    setInterval(function() {
+    setTimeout(function() {
       $('#ta_page').addClass('page_hide');
       //$.when($('#ta_page').fadeOut('fast')).done(function() {
       $('#welcome_page').fadeIn('slow');
