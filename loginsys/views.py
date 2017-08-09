@@ -17,34 +17,34 @@ def user_info(request):
         print ('pid caught is ', pid);
         time.sleep(3)
         if (pid != 0):
-            user = get_user(pid)
-            if user != None: # user found in database      
-              if (user.suspended != True): # user is not suspended
-                data = {'status':'OK', 'data':user.first_name + " " + user.last_name}                
+            the_user = get_user(pid)
+            if the_user != None: # the_user found in database      
+              if (the_user.currently_suspended != True): # the_user is not suspended
+                data = {'status':'OK', 'data':the_user.first_name + " " + the_user.last_name}                
  
-                log = AdminLog(administrator = user.administrator, last_name=user.last_name, first_name=user.first_name, pid=user.pid, date=timezone.now(), login_status=AdminLog.SUCCESS)
+                log = AdminLog(user=the_user, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()     
   
                 return HttpResponse(json.dumps(data))
-              else:  # user is suspended
-                data = {'status':'NOK', 'data':user.first_name + " " + user.last_name + " is suspended"}
+              else:  # the_user is suspended
+                data = {'status':'NOK', 'data':the_user.first_name + " " + the_user.last_name + " is suspended"}
                 
-                log = AdminLog(suspended=True, administrator = user.administrator, last_name=user.last_name, first_name=user.first_name, pid=user.pid, date=timezone.now(), login_status=AdminLog.SUSPENDED)
+                log = AdminLog(user=the_user, suspended=the_user.currently_suspended, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUSPENDED)
                 log.save()
                 
                 return HttpResponse(json.dumps(data))                
 
-            else: # user not found in data base
+            else: # the_user not found in data base
               data = {'status':'NE', 'data':''}
               
-              log = AdminLog(error=True, date=timezone.now(), login_status=AdminLog.FAILURE)
+              log = AdminLog(user = None, error=True, date=timezone.now(), login_status=AdminLog.FAILURE)
               log.save()
             
               return HttpResponse(json.dumps(data))
         else:
             data = {'status':'ERROR', 'data': 'Invalid card. Please use an official Student ID card issued by UC San Diego.'}
             
-            log = AdminLog(error=True, date=timezone.now(), login_status=AdminLog.INVALID)
+            log = AdminLog(user = None, error=True, date=timezone.now(), login_status=AdminLog.INVALID)
             log.save()
             
             return HttpResponse(json.dumps(data))
