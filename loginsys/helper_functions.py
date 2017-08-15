@@ -5,7 +5,7 @@ import string
 
 def get_user(pid):
     try:
-        user = User.objects.get(pid=pid)
+        user = User.objects.get(card_id=pid)
         return user
     except:
         return None #No entry
@@ -16,7 +16,7 @@ def card_parse(input):
             # magnetic-strip card swiper's rules
             user_pid = input[2:11]
             return user_pid
-        elif (input[0] == 'A' or input[0] == 'a'):
+        elif (input[0] == 'A' or input[0] == 'a' or input[0] == '9'):
             l = list(input)
             l[0] = '9'
             user_pid = "".join(l)             
