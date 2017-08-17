@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 from .models import *
 from django.utils import timezone
-
+from alarm_trigger import *
 def index(request):
     context = {'title': 'Main Login'}
     return render(request, 'loginsys/index.html', context)
@@ -18,35 +18,37 @@ def user_info(request):
         time.sleep(3)
         if (pid != 0):
             the_user = get_user(pid)
-            if the_user != None: # the_user found in database      
+            if the_user != None: # the_user found in database
               if (the_user.currently_suspended != True): # the_user is not suspended
-                data = {'status':'OK', 'data':the_user.first_name + " " + the_user.last_name}                
- 
+                data = {'status':'OK', 'data':the_user.first_name + " " + the_user.last_name}
+
                 log = AdminLog(user=the_user, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUCCESS)
-                log.save()     
-  
+                log.save()
+
+                sleep_alarm()
+
                 return HttpResponse(json.dumps(data))
               else:  # the_user is suspended
                 data = {'status':'NOK', 'data':the_user.first_name + " " + the_user.last_name + " is suspended"}
-                
+
                 log = AdminLog(user=the_user, suspended=the_user.currently_suspended, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUSPENDED)
                 log.save()
-                
-                return HttpResponse(json.dumps(data))                
+
+                return HttpResponse(json.dumps(data))
 
             else: # the_user not found in data base
               data = {'status':'NE', 'data':''}
-              
+
               log = AdminLog(user = None, error=True, date=timezone.now(), login_status=AdminLog.FAILURE)
               log.save()
-            
+
               return HttpResponse(json.dumps(data))
         else:
             data = {'status':'ERROR', 'data': 'Invalid card. Please use an official Student ID card issued by UC San Diego.'}
-            
+
             log = AdminLog(user = None, error=True, date=timezone.now(), login_status=AdminLog.INVALID)
             log.save()
-            
+
             return HttpResponse(json.dumps(data))
     else:
         return HttpResponse('Please enter your PID in the appropriate field, not in the URL.')
