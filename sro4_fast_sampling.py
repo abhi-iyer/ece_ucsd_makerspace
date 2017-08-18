@@ -4,9 +4,11 @@ import numpy as np
 from datetime import datetime
 from subprocess import call
 from threading import Timer
+from collections import deque
 
 GPIO.setmode(GPIO.BCM)
-RATIO = 0.85
+RATIO = 0.90
+SAMPLE_RATE = 0.05
 TRIG_first = 12
 ECHO_first = 16
 
@@ -68,35 +70,59 @@ def uh_control(control, TRIG, ECHO, idle_distance):
     distance = pulse_duration * 17150
     distance = round(distance, 2)
     #print "pin: ", ECHO, " distance: ",distance
-    print (ECHO,":", distance,":",round(distance/idle_distance,2),sep="")
+    #print (ECHO,":", distance,":",round(distance/idle_distance,2),sep="")
     if (distance < RATIO*idle_distance):
-      print ("Pin: ",ECHO, ":",round(distance/idle_distance,2), " at time", str(datetime.now()),sep="")
+      print ("Pin: ",ECHO, ":",round(distance/idle_distance,2),sep="")
       return 1
 
     return 0
   if control == 1:
     GPIO.output(TRIG, False)
 
-def entrance_clear(TRIG,ECHO,idle_distance):
+def entrance_clear(TRIG_1,ECHO_1,idle_distance_1, TRIG_2,ECHO_2, idle_distance_2):
   while True:
-    GPIO.output(TRIG, True)
+    GPIO.output(TRIG_1, True)
     time.sleep(0.00001)
-    GPIO.output(TRIG, False)
+    GPIO.output(TRIG_1, False)
 
-    while GPIO.input(ECHO)==0:
+    while GPIO.input(ECHO_1)==0:
       pulse_start = time.time()
 
-    while GPIO.input(ECHO)==1:
+    while GPIO.input(ECHO_1)==1:
       pulse_end = time.time()
 
     pulse_duration = pulse_end - pulse_start
     distance = pulse_duration * 17150
     distance = round(distance, 2)
-    if (distance < RATIO*idle_distance):
+    if (distance < RATIO*idle_distance_1):
       print (">>>>>>>>PLEASE GET OUT<<<<<<<<<<<<",sep="")
-      time.sleep(0.3)
+      time.sleep(1)
+      continue
     else:
-      return
+      print ("entrance_clear Pin: ",ECHO_1, ":",round(distance/idle_distance_1,2),sep="")
+
+    GPIO.output(TRIG_2, True)
+    time.sleep(0.00001)
+    GPIO.output(TRIG_2, False)
+
+    while GPIO.input(ECHO_2)==0:
+      pulse_start = time.time()
+
+    while GPIO.input(ECHO_2)==1:
+      pulse_end = time.time()
+
+    pulse_duration = pulse_end - pulse_start
+    distance = pulse_duration * 17150
+    distance = round(distance, 2)
+    if (distance < RATIO*idle_distance_2):
+      print (">>>>>>>>PLEASE GET OUT<<<<<<<<<<<<",sep="")
+      time.sleep(1)
+      continue
+    else:
+      print ("entrance_clear Pin: ",ECHO_2, ":",round(distance/idle_distance_2,2),sep="")
+
+    break
+  return
 
 def reject_outliers(data):
   m = 2
@@ -149,44 +175,52 @@ def alarm_sound():
   call(["omxplayer",'--vol','-1200',"-o","local","justwhat.mp3"])
 
 if __name__ == "__main__" :
-
+    sensor_first_past = [0,0,0,0,0,0,0,0,0,0]
+    sensor_second_past = [0,0,0,0,0,0,0,0,0,0]
+    sensor_last_active = 0
     try:
         print ("setting up sensor 1\n")
         idle_distance_first = uh_setup(TRIG_first, ECHO_first)
         print ("setting up sensor 2\n")
         idle_distance_second = uh_setup(TRIG_second, ECHO_second)
         print ('setup done')
-        primary_last_status = 0
-        secondary_last_status = 0
         while (True):
             #print "----------------------------------------------------------------------"
             status_first = uh_control(0, TRIG_first, ECHO_first, idle_distance_first)
-            time.sleep(0.05)
+            sensor_first_past = np.roll(sensor_first_past,1)
+            sensor_first_past[0] = status_first
+            time.sleep(SAMPLE_RATE)
             status_second = uh_control(0, TRIG_second, ECHO_second, idle_distance_second)
+            sensor_second_past = np.roll(sensor_second_past,1)
+            sensor_second_past[0] = status_second
             print ("\t\tfirst:second::", status_first,":",status_second,sep="")
-            if((status_first and status_second) or (status_second and primary_last_status)) :
-              if (secondary_last_status):
+
+            if(status_first and (sensor_last_active!=1)) :
+              sensor_last_active = 1
+              sensor_second_sum = sum(sensor_second_past)
+              #sensor_first_sum = sum(sensor_first_past)
+              if (sensor_second_sum >= 2) :
                 print (">>>>>>>>>>>>>>>>>>>>>Student ExiteD<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-              else:
+                sensor_first_past = [0,0,0,0,0,0,0,0,0,0]
+                sensor_second_past = [0,0,0,0,0,0,0,0,0,0]
+                sensor_last_active = 0
+                time.sleep(3)
+                entrance_clear(TRIG_first,ECHO_first,idle_distance_first, TRIG_second,ECHO_second,idle_distance_second)
+            elif(status_second and (sensor_last_active!=2)):
+              sensor_last_active = 2
+              sensor_first_sum = sum(sensor_first_past)
+              if (sensor_first_sum >= 2) :
                 print (">>>>>>>>>>>>>>>>>>>>>INTRUDER DETECTED<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
                 #call_alarm()
-                #alarm_sound()
-                call_alarm()
-
-              time.sleep(1)
-              entrance_clear(TRIG_first,ECHO_first,idle_distance_first)
-              primary_last_status = 0
-              secondary_last_status = 0
-            elif(status_first and secondary_last_status):
-              print (">>>>>>>>>>>>>>>>>>>>Student ExiteD<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-              time.sleep(1)
-              entrance_clear(TRIG_first,ECHO_first,idle_distance_first)
-              primary_last_status = 0
-              secondary_last_status = 0
+                sensor_first_past = [0,0,0,0,0,0,0,0,0,0]
+                sensor_second_past = [0,0,0,0,0,0,0,0,0,0]
+                sensor_last_active = 0
+                time.sleep(3)
+                entrance_clear(TRIG_first,ECHO_first,idle_distance_first, TRIG_second,ECHO_second,idle_distance_second)
             else:
-              primary_last_status = status_first
-              secondary_last_status = status_second
-            time.sleep(0.05)
+              pass
+
+            time.sleep(SAMPLE_RATE)
             #time.sleep(0.3) #works (~2-3 signals caught while intruding; some erroneous reading)
             #time.sleep(0.1) #kinda work(~5-7 signals caught; but false readings as well like standing close but not in the direct line)
 
