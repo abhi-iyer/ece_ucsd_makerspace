@@ -6,7 +6,8 @@ import time
 from datetime import datetime
 from .models import *
 from django.utils import timezone
-from alarm_trigger import *
+#from sro4_working import sleep_alarm
+
 def index(request):
     context = {'title': 'Main Login'}
     return render(request, 'loginsys/index.html', context)
@@ -25,7 +26,7 @@ def user_info(request):
                 log = AdminLog(user=the_user, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()
 
-                sleep_alarm()
+                #sleep_alarm()
 
                 return HttpResponse(json.dumps(data))
               else:  # the_user is suspended
