@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 from .models import *
 from django.utils import timezone
-from alarm_trigger import *
+from kiosk.signal_handler import signal_notifier
 def index(request):
     context = {'title': 'Main Login'}
     return render(request, 'loginsys/index.html', context)
@@ -24,8 +24,10 @@ def user_info(request):
 
                 log = AdminLog(user=the_user, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()
-
-                sleep_alarm()
+                #sending notification to RPi
+                hold_time = 10 #circuit disable time in seconds
+                print ("Notifying to switch off sensor for 10 seconds")
+                signal_notifier.send(sender=None,switch_time=hold_time)
 
                 return HttpResponse(json.dumps(data))
               else:  # the_user is suspended
