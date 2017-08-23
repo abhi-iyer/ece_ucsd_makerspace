@@ -5,9 +5,23 @@ from datetime import datetime
 from subprocess import call
 from threading import Timer
 from collections import deque
+print ("Function calling check")
+from django.dispatch import receiver
+try:
+  from kiosk.signal_handler import signal_notifier
+except:
+  from signal_handler import signal_notifier
 
-GPIO.setmode(GPIO.BCM)
-RATIO = 0.90
+@receiver(signal_notifier)
+def control_state(sender, **kwargs):
+  for key, value in kwargs.items():
+    print ("%s = %s" % (key, value))
+    if key == "switch_time":
+      switch_time = int(value)
+  print ("signal received in sound_sensor function")
+  sleep_alarm(switch_time)
+
+RATIO = 0.85
 SAMPLE_RATE = 0.05
 TRIG_first = 12
 ECHO_first = 16
@@ -18,36 +32,31 @@ ECHO_second = 24
 
 alarm_state = 1
 
-GPIO.setup(TRIG_first,GPIO.OUT)
-GPIO.setup(ECHO_first,GPIO.IN)
-GPIO.setup(TRIG_second,GPIO.OUT)
-GPIO.setup(ECHO_second,GPIO.IN)
 
-GPIO.output(TRIG_first, False)
-GPIO.output(TRIG_second, False)
-print ("Waiting For Sensor To Settle")
-time.sleep(2)
-
-print ("Distance Measurement In Progress")
-
-def sleep_alarm():
+def sleep_alarm(halt_time):
   global alarm_state
   print("Previous value " + str(alarm_state))
   alarm_state = 0
   print("Value after call " + str(alarm_state))
-  #t = Timer(10, set_alarm)
-  #t.start()
-  time.sleep(10)
-  set_alarm()
+  print ("switch_time is ",halt_time,sep='')
+  t = Timer(20, set_alarm)
+  t.start()
+  #time.sleep(10)
+  #set_alarm()
 
 def set_alarm():
   global alarm_state
+  print('alarm_state is ', alarm_state,sep='')
   alarm_state = 1
 
 def call_alarm():
   global alarm_state
+  print('alarm_state is ', alarm_state,sep='')
   if alarm_state == 1:
-    call(["omxplayer", "--vol", "-1200", "-o", "local", "justwhat.mp3"])
+    print ("called the alarm function; yipeee")
+    #call(["omxplayer", "--vol", "-1200", "-o", "local", "justwhat.mp3"])
+  else :
+    print ("Speaker turned off")
 
 def uh_control(control, TRIG, ECHO, idle_distance):
   if control == 0:
@@ -175,10 +184,23 @@ def alarm_sound():
   call(["omxplayer",'--vol','-1200',"-o","local","justwhat.mp3"])
 
 if __name__ == "__main__" :
-    sensor_first_past = [0,0,0,0,0,0,0,0,0,0]
-    sensor_second_past = [0,0,0,0,0,0,0,0,0,0]
-    sensor_last_active = 0
     try:
+        print ("SETUP BEGIN")
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(TRIG_first,GPIO.OUT)
+        GPIO.setup(ECHO_first,GPIO.IN)
+        GPIO.setup(TRIG_second,GPIO.OUT)
+        GPIO.setup(ECHO_second,GPIO.IN)
+
+        GPIO.output(TRIG_first, False)
+        GPIO.output(TRIG_second, False)
+        print ("Waiting For Sensor To Settle")
+        time.sleep(2)
+        print ("Distance Measurement In Progress")
+
+        sensor_first_past = [0,0,0,0,0,0,0,0,0,0]
+        sensor_second_past = [0,0,0,0,0,0,0,0,0,0]
+        sensor_last_active = 0
         print ("setting up sensor 1\n")
         idle_distance_first = uh_setup(TRIG_first, ECHO_first)
         print ("setting up sensor 2\n")
@@ -193,7 +215,7 @@ if __name__ == "__main__" :
             status_second = uh_control(0, TRIG_second, ECHO_second, idle_distance_second)
             sensor_second_past = np.roll(sensor_second_past,1)
             sensor_second_past[0] = status_second
-            print ("\t\tfirst:second::", status_first,":",status_second,sep="")
+            #print ("\t\tfirst:second::", status_first,":",status_second,sep="")
 
             if(status_first and (sensor_last_active!=1)) :
               sensor_last_active = 1
@@ -211,7 +233,7 @@ if __name__ == "__main__" :
               sensor_first_sum = sum(sensor_first_past)
               if (sensor_first_sum >= 2) :
                 print (">>>>>>>>>>>>>>>>>>>>>INTRUDER DETECTED<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-                #call_alarm()
+                call_alarm()
                 sensor_first_past = [0,0,0,0,0,0,0,0,0,0]
                 sensor_second_past = [0,0,0,0,0,0,0,0,0,0]
                 sensor_last_active = 0
