@@ -6,7 +6,9 @@ import time
 from datetime import datetime
 from .models import *
 from django.utils import timezone
-from kiosk.signal_handler import signal_notifier
+from kiosk.signals import turn_off_sensor
+#from kiosk.sro4_fast_sampling import SensorHandler
+#from  kiosk import sro4_fast_sampling
 def index(request):
     context = {'title': 'Main Login'}
     return render(request, 'loginsys/index.html', context)
@@ -15,7 +17,7 @@ def user_info(request):
     if (request.method == "POST"):
         pid = card_parse(request.POST['pid'])
         print ('pid caught is ', pid);
-        time.sleep(3)
+        #time.sleep(3)
         if (pid != 0):
             the_user = get_user(pid)
             if the_user != None: # the_user found in database
@@ -25,9 +27,11 @@ def user_info(request):
                 log = AdminLog(user=the_user, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()
                 #sending notification to RPi
+                #test = sro4_fast_sampling.SensorHandler()
+                #print ("idle_distance is ",test.instance.idle_distance_first,sep='')
                 hold_time = 10 #circuit disable time in seconds
                 print ("Notifying to switch off sensor for 10 seconds")
-                signal_notifier.send(sender=None,switch_time=hold_time)
+                turn_off_sensor.send(sender=None,switch_time=hold_time)
 
                 return HttpResponse(json.dumps(data))
               else:  # the_user is suspended
