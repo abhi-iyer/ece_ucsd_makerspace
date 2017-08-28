@@ -1,6 +1,9 @@
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
 
 img = cv2.imread('foo.jpeg')
+
 height, width, channels = img.shape
 
 blues = [img[0, 0, 0]]
@@ -12,6 +15,31 @@ for r in range(1, height-1):
         blues.extend([img[r, c, 0]]) # find blue layer values
         greens.extend([img[r, c, 1]]) # find green layer values
         reds.extend([img[r, c, 2]]) # find red layer values 
+
+b = plt.figure(1)
+plt.title("Blues Values")
+plt.hist(blues, bins=100)
+plt.xlabel("Value")
+plt.ylabel("Frequency")
+b.show()
+
+g = plt.figure(2)
+plt.title("Green Values")
+plt.hist(greens, bins=100)
+plt.xlabel("Value")
+plt.ylabel("Frequency")
+g.show()
+
+r = plt.figure(3)
+plt.title("Red Values")
+plt.hist(reds, bins=100)
+plt.xlabel("Value")
+plt.ylabel("Frequency")
+r.show()
+
+plt.show()
+
+
 
 
     
