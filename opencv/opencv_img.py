@@ -10,11 +10,17 @@ blues = [img[0, 0, 0]]
 greens = [img[0, 0, 1]]
 reds = [img[0, 0, 2]]
 
+blues_sum, greens_sum, reds_sum = 0, 0, 0
+
 for r in range(1, height-1):
     for c in range(1, width-1):
         blues.extend([img[r, c, 0]]) # find blue layer values
         greens.extend([img[r, c, 1]]) # find green layer values
         reds.extend([img[r, c, 2]]) # find red layer values 
+        
+        blues_sum = blues_sum + img[r, c, 0]
+        greens_sum = greens_sum + img[r, c, 1]
+        reds_sum = reds_sum + img[r, c, 2]        
 
 b = plt.figure(1)
 plt.title("Blues Values")
@@ -39,7 +45,9 @@ r.show()
 
 plt.show()
 
-
+print("Average blue color: ", blues_sum/len(blues))
+print("Average green color: ", greens_sum/len(greens))
+print("Average red color: ", reds_sum/len(reds))
 
 
     
