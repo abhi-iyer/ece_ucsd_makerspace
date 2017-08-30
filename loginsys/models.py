@@ -8,53 +8,50 @@ class User(models.Model):
         card_id = models.CharField(max_length=9, null=True)
         current_department = models.CharField(max_length=20, null=True)
         class_year = models.CharField(max_length=15, null=True)
-        currently_administrator = models.BooleanField(default=False)     
+        currently_administrator = models.BooleanField(default=False)
         currently_suspended = models.BooleanField(default=False)
-        
+
         def __str__(self):
-            if (currently_administrator):
-                return '%s %s (TA)' % (self.first_name, self.last_name)
-            else:
-                return '%s %s' % (self.first_name, self.last_name)
+            return '%s %s' % (self.first_name, self.last_name)
 
 class AdminLog(models.Model):
         user = models.ForeignKey(User, default=None, null=True)
-        
-        error = models.BooleanField(default=False)        
+
+        error = models.BooleanField(default=False)
         administrator = models.BooleanField(default=False)
         suspended = models.BooleanField(default=False)
         date = models.DateTimeField()
-        
+
         SUCCESS="SUCC"
         FAILURE="FAIL"
         SUSPENDED="SUSP"
         INVALID="INVA"
-        
-        
+
+
         SUCCESS_CHOICES = (
             (SUCCESS, "Success"),
             (FAILURE, "User Not Found in Database"),
             (SUSPENDED, "Access Revoked"),
             (INVALID, "Invalid ID Card"),
-        )        
+        )
 
         login_status = models.CharField(
             max_length=4,
             choices=SUCCESS_CHOICES,
-            default=SUCCESS,        
+            default=SUCCESS,
         )
-        
+
         def __str__(self):
             if (self.error == False and self.suspended == False):
                 if (self.administrator == True):
-                    return 'TA %s %s logged in successfully at %s' % (self.user.first_name, self.user.last_name, self.date)
+                    return 'TA %s %s logged in successfully at %s' % (self.user.first_name, self.user.last_name, self.date.strftime("%Y-%m-%d %H:%M:%S"))
                 else:
-                    return 'Student %s %s logged in successfully at %s' % (self.user.first_name, self.user.last_name, self.date)
+                    return 'Student %s %s logged in successfully at %s' % (self.user.first_name, self.user.last_name, self.date.strftime("%Y-%m-%d %H:%M:%S"))
             elif (self.suspended == True):
                 if (self.administrator == True):
-                    return 'Access revoked for TA %s %s at %s' % (self.user.first_name, self.user.last_name, self.date)
+                    return 'Access revoked for TA %s %s at %s' % (self.user.first_name, self.user.last_name, self.date.strftime("%Y-%m-%d %H:%M:%S"))
                 else:
-                    return 'Access revoked for Student %s %s at %s' % (self.user.first_name, self.user.last_name, self.date)
+                    return 'Access revoked for Student %s %s at %s' % (self.user.first_name, self.user.last_name, self.date.strftime("%Y-%m-%d %H:%M:%S"))
             elif (self.error == True and self.login_status == "FAIL"):
                 return 'User not found in database'
             elif (self.error == True and self.login_status == "INVA"):
