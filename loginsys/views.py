@@ -26,6 +26,7 @@ def user_info(request):
 
                 log = AdminLog(user=the_user, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()
+
                 #sending notification to RPi
                 #test = sro4_fast_sampling.SensorHandler()
                 #print ("idle_distance is ",test.instance.idle_distance_first,sep='')
