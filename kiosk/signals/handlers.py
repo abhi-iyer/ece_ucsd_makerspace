@@ -1,21 +1,19 @@
 from kiosk.signals import turn_off_sensor
 from django.dispatch import receiver
-#from kiosk.sro4_fast_sampling import SensorHandler
+from kiosk.ultrasound_sensor_control import SensorHandler
 import time
-#try:
-#from kiosk.signal_handler import signal_notifier
-#except:
-#  from signal_handler import signal_notifier
-calib_distance = 0
+
+main_handler = SensorHandler()
 
 @receiver(turn_off_sensor)
 def control_state(sender, **kwargs):
   for key, value in kwargs.items():
     print ("%s = %s" %(key,value))
+    if key == "switch_time":
+      switch_time = int(value)
   print ("signal received in vmndfkjvndjkfv")
-  #sensor_modifier = SensorHandler()
-  # print('idle is ', sensor_modifier.instance.idle_distance_first,sep='')
-  #sensor_modifier.sleep_alarm(switch_time)
+  print('idle distance first is ',main_handler.instance.idle_distance_first,sep='')
+  main_handler.sleep_alarm(switch_time)
 
-#main_handler = SensorHandler()
-#main_handler.start()
+main_handler.sensor_benchmark_setup()
+main_handler.start_reading()
