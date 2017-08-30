@@ -59,28 +59,28 @@ class SensorHandler:
     sys.exit(0)
 
   def sleep_alarm(self,halt_time):
-    print("Previous value " + str(self.instance.alarm_state))
+    #print("Previous value " + str(self.instance.alarm_state))
     self.instance.alarm_state = 0
     #if self.instance.read_sensor_timer:
     #  self.instance.read_sensor_timer.cancel()
     #  self.instance.read_sensor_timer = None
-    print("Value after call " + str(self.instance.alarm_state))
-    print ("switch_time is ",halt_time,sep='')
+    print("sleep_alarm: alarm state set to " + str(self.instance.alarm_state))
+    #print ("switch_time is ",halt_time,sep='')
     t = Timer(halt_time, self.set_alarm)
     t.start()
 
   def set_alarm(self):
-    print('set_alarm alarm_state is ', self.instance.alarm_state,sep='')
+    #print('set_alarm alarm_state is ', self.instance.alarm_state,sep='')
     self.instance.alarm_state = 1
-    print('set_alarm alarm_state is ', self.instance.alarm_state,sep='')
+    print('set_alarm alarm_state set to ', self.instance.alarm_state,sep='')
     #self.instance.read_sensor_timer = Timer(self.instance.sample_rate, self.start_reading())
     #self.instance.read_sensor_timer.start()
 
   def call_alarm(self):
-    print('alarm_state is ', self.instance.alarm_state,sep='')
+    #print('alarm_state is ', self.instance.alarm_state,sep='')
     if self.instance.alarm_state == 1:
       print ("called the alarm function; yipeee")
-      #call(["omxplayer", "--vol", "-1200", "-o", "local", "justwhat.mp3"])
+      call(["omxplayer", "--vol", "-1200", "-o", "local", "justwhat.mp3"])
     else :
       print ("Speaker turned off")
 
@@ -106,7 +106,7 @@ class SensorHandler:
     #print "pin: ", ECHO, " distance: ",distance
     #print (ECHO,":", distance,":",round(distance/idle_distance,2),sep="")
     if (distance < self.instance.threshold_ratio*idle_distance):
-      print ("Pin: ",ECHO, ":",round(distance/idle_distance,2),sep="")
+      print ("Pin: ",ECHO, ":",round(distance/idle_distance,2),' time: ',datetime.now(),sep="")
       return 1
 
     return 0
@@ -200,7 +200,6 @@ class SensorHandler:
 
   def sensor_benchmark_setup(self):
     print ("SETUP BEGIN from start function")
-    print ('echo ', self.instance.trig_first, sep='')
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(self.instance.trig_first, GPIO.OUT)
     GPIO.setup(self.instance.echo_first, GPIO.IN)

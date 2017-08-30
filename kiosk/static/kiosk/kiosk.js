@@ -1,5 +1,8 @@
 $(document).ready(function() {
   console.log( "ready!" );
+  $('#pid_field').focus(function() {
+    console.log(".focus called")
+  });
   $('#check_user').on('click', function(event) {
     console.log('caught check_user')
     event.preventDefault();
@@ -35,7 +38,9 @@ $(document).ready(function() {
           $('#authorized_page').removeClass('page_hide');
           setTimeout(function() {
             $('#authorized_page').addClass('page_hide');
-            $('#welcome_page').fadeIn('slow');
+            $('#welcome_page').fadeIn('slow',function() {
+              $('#pid_field').focus();
+            });
             $('#username').empty();
           },5000);
         } else {
@@ -47,7 +52,7 @@ $(document).ready(function() {
             $('.alert').text(resp['data']);
           } else { 
             //data = {status: "NE", data: "Unauthorized"}
-            $('.alert').text('YOU ARE UNAUTHORIZED, KINDLY GET AUTHORIZATION FIRST');
+            $('.alert').text('YOU ARE UNAUTHORIZED. PLEASE COMPLETE THE ONLINE TUTORIALS TO GET ACCESS.');
           }
           setTimeout(function() {
             $('.alert').empty();
@@ -75,7 +80,9 @@ $(document).ready(function() {
     setTimeout(function() {
       $('#ta_page').addClass('page_hide');
       //$.when($('#ta_page').fadeOut('fast')).done(function() {
-      $('#welcome_page').fadeIn('slow');
+      $('#welcome_page').fadeIn('slow',function() {
+        $('#pid_field').focus();
+      });
       //});
     }, 5000);
     return false;
