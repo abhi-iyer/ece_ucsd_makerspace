@@ -1,9 +1,17 @@
+import numpy as np
 import cv2
-import numpy
+cap = cv2.VideoCapture('people_walking.h264')
+fgbg = cv2.createBackgroundSubtractorMOG2()
 
-img_fg = cv2.imread('foreground.jpeg')
-img_bg = cv2.imread('background.jpeg')
+while(1):
+    ret, frame = cap.read()
+    
+    fgmask = fgbg.apply(frame)
+    
+    cv2.imshow('frame',fgmask)
+    k = cv2.waitKey(30) & 0xff
+    if k == 27:
+        break
 
-img = cv2.absdiff(img_fg, img_bg)
-
-cv2.imwrite('total.jpeg', img)
+cap.release()
+cv2.destroyAllWindows()
