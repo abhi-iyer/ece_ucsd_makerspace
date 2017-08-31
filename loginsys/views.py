@@ -7,8 +7,6 @@ from datetime import datetime
 from .models import *
 from django.utils import timezone
 from kiosk.signals import turn_off_sensor
-#from kiosk.sro4_fast_sampling import SensorHandler
-#from  kiosk import sro4_fast_sampling
 def index(request):
     context = {'title': 'Main Login'}
     return render(request, 'loginsys/index.html', context)
@@ -17,7 +15,6 @@ def user_info(request):
     if (request.method == "POST"):
         pid = card_parse(request.POST['pid'])
         print ('pid caught is ', pid);
-        #time.sleep(3)
         if (pid != 0):
             the_user = get_user(pid)
             if the_user != None: # the_user found in database
@@ -28,8 +25,6 @@ def user_info(request):
                 log.save()
 
                 #sending notification to RPi
-                #test = sro4_fast_sampling.SensorHandler()
-                #print ("idle_distance is ",test.instance.idle_distance_first,sep='')
                 hold_time = 10 #circuit disable time in seconds
                 print ("Notifying to switch off sensor for 10 seconds")
                 turn_off_sensor.send(sender=None,switch_time=hold_time)

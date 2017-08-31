@@ -4,5 +4,11 @@ class KioskConfig(AppConfig):
   name = 'kiosk'
 
   def ready(self):
-    #import kiosk.sro4_fast_sampling
+    '''
+    Import signal handler, sensor handler
+    Usage:
+    1) signal receiver is activated
+    2) sensor-alarm system activates in the backend
+    '''
     import kiosk.signals.handlers
+    import kiosk.sensors.handlers
