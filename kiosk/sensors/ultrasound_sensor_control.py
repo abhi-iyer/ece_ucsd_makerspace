@@ -63,7 +63,7 @@ class SensorHandler:
     #print('alarm_state is ', self.instance.alarm_state,sep='')
     if self.instance.alarm_state == 1:
       print ("called the alarm function; yipeee")
-      call(["omxplayer", "--vol", "-1200", "-o", "local", "justwhat.mp3"])
+      call(["omxplayer", "--vol", "-2400", "-o", "local", "justwhat.mp3"])
     else :
       print ("Speaker turned off")
 
@@ -82,7 +82,7 @@ class SensorHandler:
       pulse_duration = pulse_end - pulse_start
       distance = pulse_duration * 17150
       distance = round(distance, 2)
-     return distance
+      return distance
     except:
       print ("ERROR: Either pulse_end or pulse_end is not defined; Ignore instead of triggering flase alarm")
       return 0
@@ -91,7 +91,7 @@ class SensorHandler:
     distance = self.read_sensor_distance(TRIG,ECHO)
 
     if ((distance > 0) and (distance < threshold_distance)):
-      print ("Pin: ",ECHO, ":",round((distance*self.threshold_ratio)/threshold_distance,2),' time: ',datetime.now(),sep="")
+      print ("Pin: ",ECHO, ":",round((distance*self.instance.threshold_ratio)/threshold_distance,2),' time: ',datetime.now(),sep="")
       return 1
 
     return 0
@@ -121,8 +121,8 @@ class SensorHandler:
 
   def reject_outliers(self,data):
     '''
-    Description: Sensor readings can often be erroneous. We reject such readings 
-    which are m*std_dev away from mean readings and then take average over the 
+    Description: Sensor readings can often be erroneous. We reject such readings
+    which are m*std_dev away from mean readings and then take average over the
     remaining data set.
     '''
     m = 3
@@ -137,14 +137,14 @@ class SensorHandler:
     while counter<30 :
       time.sleep(self.instance.sample_rate)
       idle_distance = self.read_sensor_distance(TRIG,ECHO)
-      if (idle_distance > 0)
+      if (idle_distance > 0):
         x.append(idle_distance)
         counter += 1
 
     x_mod = self.reject_outliers(x) #remove junk data from reading
     average_dist = np.mean(x_mod)
-    print ("Pin: ",ECHO," Samples accepted in setting up benchmark: %d/%d ",% (length(x_mod), length(x)),sep="")
-    print ("Pin: ",ECHO," Set idle_distance:%d threshold_distance:%d ", %(average_dist,self.instance.threshold_ratio*average_dist),sep="")
+    print ("Pin: ",ECHO," Samples accepted in setting up benchmark: %d/%d "% (len(x_mod), len(x)),sep="")
+    print ("Pin: ",ECHO," Set idle_distance:%d threshold_distance:%d " %(average_dist,self.instance.threshold_ratio*average_dist),sep="")
     return average_dist
 
   def alarm_sound(self):
@@ -175,11 +175,11 @@ class SensorHandler:
   def start_reading(self):
     #print "----------------------------------------------------------------------"
     self.instance.read_sensor_timer = None
-    status_first = self.uh_control(self.instance.trig_first, self.instance.echo_first, self.instance.idle_distance_first)
+    status_first = self.uh_control(self.instance.trig_first, self.instance.echo_first, self.instance.threshold_distance_first)
     self.instance.sensor_first_past = np.roll(self.instance.sensor_first_past,1)
     self.instance.sensor_first_past[0] = status_first
     time.sleep(self.instance.sample_rate)
-    status_second = self.uh_control(self.instance.trig_second, self.instance.echo_second, self.instance.idle_distance_second)
+    status_second = self.uh_control(self.instance.trig_second, self.instance.echo_second, self.instance.threshold_distance_second)
     self.instance.sensor_second_past = np.roll(self.instance.sensor_second_past,1)
     self.instance.sensor_second_past[0] = status_second
     #print ("\t\tfirst:second::", status_first,":",status_second,sep="")
