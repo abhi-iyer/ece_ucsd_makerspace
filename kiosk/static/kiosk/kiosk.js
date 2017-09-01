@@ -37,8 +37,10 @@ $(document).ready(function() {
           var downloadTimer = setInterval(function(){
             timeleft--;
             $("#countdowntimer").text(timeleft);
-            if(timeleft <= 0)
+            if(timeleft <= 0) {
               clearInterval(downloadTimer);
+              $("#countdowntimer").text('10');
+            }
           },1000);
           setTimeout(function() {
             $('#authorized_page').addClass('page_hide');
