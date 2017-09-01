@@ -13,37 +13,31 @@
 
 <main id="welcome_page">
   <section>
-    <div class="ui center aligned container intro grey_bckgnd">
-      <h1 class="ui orange huge header" style="padding:1em;" >Welcome to ECE Makerspace</h1>
-      <h3 class="ui orange large header"> SIGN IN BY SWIPING YOUR UC SAN DIEGO CARD </h3>
+    <div class="ui center aligned container ta_intro_80 red_bckgnd">
+      <h1 class="ui text_white huge header" style="padding:1em;font-size:4em" >Welcome to ECE Makerspace</h1>
+      <h3 class="ui text_white large header" style="font-size:7em"> SIGN IN BY SWIPING YOUR UC SAN DIEGO CARD </h3>
     </div>
   </section>
 
-  <section class=" ui center aligned container intro">
-  <form action='' method='POST'> {% csrf_token %}
-    <div class = "ui massive form" >
-      <div class = "required field" >
-        <label style="padding:1em;"> Kindly enter your PID and submit if you are not carrying your UCSD ID </label>
-        <!-- Turn off autocomplete so that users can't see history of entries-->
-        <input placeholder = "Enter PID" type = "text" name='pid' id="pid_field" autocomplete="off">
-        <h1 id="input_null" class='ui red large left aligned header'></h1> 
-      </div>
-      <button class="ui primary submit button" id="check_user"> Submit </button>
-    </div>
-  </form>
-  </section>
-
-  <section class="ui center aligned container intro grey_bckgnd">
-  <form action='' method='POST'> {% csrf_token %}
+  <section class="ui center aligned container ta_intro_20 grey_bckgnd">
+  <form action='' method='POST'style="top:30%;position:relative"> {% csrf_token %}
     <div class="ui vertically divided grid">
       <div class="two column row">
         <div class="column">
-          <p class="lastrow_para">If a visitor, you may request TA assistance for lab tour.</p>
-          <button class="huge ui brown button submit" id="ta_call" style="width:80%">Request TA Assistance</button>         
+          <div class = "ui huge form" >
+            <div class="fields" >
+              <div class="ten wide field">
+                <input placeholder = "or Enter UCSD PID" type = "text" name='pid' id="pid_field" autocomplete="off">
+                <!--h1 id="input_null" class='ui red large left aligned header'></h1--> 
+              </div>
+              <div class="four wide field">
+                <button class="ui grey submit button huge" id="check_user"> Submit </button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="column">
-          <p class="lastrow_para">For gaining access to Makerspace, please fill it out the form at the following URL, http://www.gotourl.com</p>
-          <img class="ui centered small image" src = "{% static "kiosk/images/qrcode.jpeg" %}" alt="QR code"/>
+          <button class="huge ui nephritisi_bckgnd text_white button submit" id="ta_call" style="width:80%" >Request Assistance</button>     
         </div>
       </div>
     </div>
