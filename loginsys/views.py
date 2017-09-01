@@ -46,7 +46,7 @@ def user_info(request):
 
               return HttpResponse(json.dumps(data))
         else:
-            data = {'status':'ERROR', 'data': 'Invalid card. Please use an official Student ID card issued by UC San Diego.'}
+            data = {'status':'ERROR', 'data': 'INVALID CARD. Please use an official UC San Diego card.'}
 
             log = AdminLog(user = None, error=True, date=timezone.now(), login_status=AdminLog.INVALID)
             log.save()

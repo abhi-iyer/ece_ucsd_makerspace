@@ -15,7 +15,7 @@
   <section>
     <div class="ui center aligned container intro grey_bckgnd">
       <h1 class="ui orange huge header" style="padding:1em;" >Welcome to ECE Makerspace</h1>
-      <h3 class="ui orange large header">For Students and Faculty, to enter, please scan your ID card by flashing through barcode reader or magnetic stripe reader. </h3>
+      <h3 class="ui orange large header"> SIGN IN BY SWIPING YOUR UC SAN DIEGO CARD </h3>
     </div>
   </section>
 
@@ -24,7 +24,8 @@
     <div class = "ui massive form" >
       <div class = "required field" >
         <label style="padding:1em;"> Kindly enter your PID and submit if you are not carrying your UCSD ID </label>
-        <input placeholder = "Enter PID" type = "text" name='pid' id="pid_field" autofocus>
+        <!-- Turn off autocomplete so that users can't see history of entries-->
+        <input placeholder = "Enter PID" type = "text" name='pid' id="pid_field" autocomplete="off">
         <h1 id="input_null" class='ui red large left aligned header'></h1> 
       </div>
       <button class="ui primary submit button" id="check_user"> Submit </button>
@@ -55,7 +56,7 @@
   <section>
     <div class="ui center aligned container intro grey_bckgnd">
       <h1 class="ui orange huge header" style="padding:1em;">Welcome <span id='username'></span>, Please ENTER</h1>
-      <h3 class="ui orange large header">Kindly enter the lab in next 10 seconds. </h3>
+      <h3 class="ui orange large header">Kindly enter the lab in next <span id='countdowntimer'>10</span>  seconds. </h3>
     </div>
   </section>
 

@@ -7,7 +7,6 @@ from threading import Timer
 from collections import deque
 import signal
 import sys
-print ("Function calling check")
 
 class SensorHandler:
   class __MyOnlySensorHandler:
@@ -42,6 +41,10 @@ class SensorHandler:
     sys.exit(0)
 
   def sleep_alarm(self,halt_time):
+    '''
+    Description: Halts the alarm for given halt_time
+    by setting alarm_state to 0(instead of 1)
+    '''
     #print("Previous value " + str(self.instance.alarm_state))
     self.instance.alarm_state = 0
     #if self.instance.read_sensor_timer:
@@ -53,6 +56,10 @@ class SensorHandler:
     t.start()
 
   def set_alarm(self):
+    '''
+    Description: Sets the alarm back ON
+    by setting alarm_state to 0(instead of 1)
+    '''
     #print('set_alarm alarm_state is ', self.instance.alarm_state,sep='')
     self.instance.alarm_state = 1
     print('set_alarm alarm_state set to ', self.instance.alarm_state,sep='')
@@ -60,7 +67,10 @@ class SensorHandler:
     #self.instance.read_sensor_timer.start()
 
   def call_alarm(self):
-    #print('alarm_state is ', self.instance.alarm_state,sep='')
+    '''
+    Description: Trigger the omxplayer to sound alarm
+    by checking the alarm_state
+    '''
     if self.instance.alarm_state == 1:
       print ("called the alarm function; yipeee")
       call(["omxplayer", "--vol", "-2400", "-o", "local", "justwhat.mp3"])
@@ -68,6 +78,9 @@ class SensorHandler:
       print ("Speaker turned off")
 
   def read_sensor_distance(self,TRIG,ECHO):
+    '''
+    Description: Returns ultrasound sensor reading for given GPIO pin pairs
+    '''
     GPIO.output(TRIG, True)
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
@@ -87,7 +100,11 @@ class SensorHandler:
       print ("ERROR: Either pulse_end or pulse_end is not defined; Ignore instead of triggering flase alarm")
       return 0
 
-  def uh_control(self, TRIG, ECHO, threshold_distance):
+  def check_intrusion(self, TRIG, ECHO, threshold_distance):
+    '''
+    Description: Sets the alarm back ON
+    by setting alarm_state to 0(instead of 1)
+    '''
     distance = self.read_sensor_distance(TRIG,ECHO)
 
     if ((distance > 0) and (distance < threshold_distance)):
@@ -97,6 +114,10 @@ class SensorHandler:
     return 0
 
   def entrance_clear(self):
+    '''
+    Description: Check if someone is halted in grey area after intruding/exiting
+    The method will not return unless it detects clear zone
+    '''
     self.instance.read_sensor_timer = None
     while True:
       distance = self.read_sensor_distance(self.instance.trig_first,self.instance.echo_first)
@@ -131,7 +152,11 @@ class SensorHandler:
     filtered = [e for e  in data if (u - m*s < e < u + m*s)]
     return filtered
 
-  def uh_setup(self,TRIG, ECHO):
+  def sensor_distance_setup(self,TRIG, ECHO):
+    '''
+    Description: For a given set of GPIO ultrasounic pins, continuously read few samples;
+    reject false readings and returns the idle distance for that sensor.
+    '''
     x = []
     counter = 0
     while counter<30 :
@@ -147,10 +172,11 @@ class SensorHandler:
     print ("Pin: ",ECHO," Set idle_distance:%d threshold_distance:%d " %(average_dist,self.instance.threshold_ratio*average_dist),sep="")
     return average_dist
 
-  def alarm_sound(self):
-    call(["omxplayer",'--vol','-1200',"-o","local","justwhat.mp3"])
-
   def sensor_benchmark_setup(self):
+    '''
+    Description: Called one time during setup; Set GPIO pins state to In/Out;
+    Sets idle_distance to be used until it is called again
+    '''
     print ("Ultrasonic sensor Setup BEGIN")
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(self.instance.trig_first, GPIO.OUT)
@@ -165,25 +191,35 @@ class SensorHandler:
     #print ("Distance Measurement In Progress")
 
     print ("Setting up sensor 1\n")
-    self.instance.idle_distance_first = self.uh_setup(self.instance.trig_first, self.instance.echo_first)
+    self.instance.idle_distance_first = self.sensor_distance_setup(self.instance.trig_first, self.instance.echo_first)
     self.instance.threshold_distance_first = self.instance.idle_distance_first*self.instance.threshold_ratio
+
     print ("Setting up sensor 2\n")
-    self.instance.idle_distance_second = self.uh_setup(self.instance.trig_second, self.instance.echo_second)
+    self.instance.idle_distance_second = self.sensor_distance_setup(self.instance.trig_second, self.instance.echo_second)
     self.instance.threshold_distance_second = self.instance.idle_distance_second*self.instance.threshold_ratio
     print ('Setup COMPLETE')
 
   def start_reading(self):
+    '''
+    Description: Method is called every self.instance.sample_rate(default:0.05) seconds;
+    It checks for sensor being triggered and based on past readings; decipher if 
+    there has been an intrusion or not; If yes, take necessary steps.
+    '''
     #print "----------------------------------------------------------------------"
     self.instance.read_sensor_timer = None
-    status_first = self.uh_control(self.instance.trig_first, self.instance.echo_first, self.instance.threshold_distance_first)
+
+    status_first = self.check_intrusion(self.instance.trig_first, self.instance.echo_first, self.instance.threshold_distance_first)
     self.instance.sensor_first_past = np.roll(self.instance.sensor_first_past,1)
     self.instance.sensor_first_past[0] = status_first
+
     time.sleep(self.instance.sample_rate)
-    status_second = self.uh_control(self.instance.trig_second, self.instance.echo_second, self.instance.threshold_distance_second)
+
+    status_second = self.check_intrusion(self.instance.trig_second, self.instance.echo_second, self.instance.threshold_distance_second)
     self.instance.sensor_second_past = np.roll(self.instance.sensor_second_past,1)
     self.instance.sensor_second_past[0] = status_second
     #print ("\t\tfirst:second::", status_first,":",status_second,sep="")
 
+    '''Logic to decipher if a student exited or entered'''
     if(status_first and (self.instance.sensor_last_active!=1)) :
       self.instance.sensor_last_active = 1
       sensor_second_sum = sum(self.instance.sensor_second_past)
@@ -194,6 +230,7 @@ class SensorHandler:
         self.instance.sensor_last_active = 0
         self.instance.read_sensor_timer = Timer(3,self.entrance_clear)
         self.instance.read_sensor_timer.start()
+    
     elif(status_second and (self.instance.sensor_last_active!=2)):
       self.instance.sensor_last_active = 2
       sensor_first_sum = sum(self.instance.sensor_first_past)
@@ -205,8 +242,10 @@ class SensorHandler:
         self.instance.sensor_last_active = 0
         self.instance.read_sensor_timer = Timer(3,self.entrance_clear)
         self.instance.read_sensor_timer.start()
+    
     else:
       pass
+
     if self.instance.read_sensor_timer == None:
       self.instance.read_sensor_timer = Timer(self.instance.sample_rate, self.start_reading)
       self.instance.read_sensor_timer.start()
