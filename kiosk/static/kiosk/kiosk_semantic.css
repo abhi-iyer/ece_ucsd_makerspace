@@ -8,7 +8,13 @@
 .ta_intro_33 {
   height:33vh;
 }
+.ta_intro_80 {
+  height:80vh;
+}
 
+.ta_intro_20 {
+  height:20vh;
+}
 .ta_font {
   font-size:1.2em;
 }
@@ -28,7 +34,17 @@ li {
     /*background-color: #f44336;  Red */
   color: white;
   font-size: 4em;
+  opacity:1;
 }
-.grey_bckgnd {
+.ui.grey_bckgnd {
   background-color:#ecf0f1;
+}
+.ui.red_bckgnd {
+  background-color:#c0392b;
+}
+.ui.nephritisi_bckgnd {
+  background-color:#27ae60;
+}
+.ui.text_white {
+  color:white;
 }

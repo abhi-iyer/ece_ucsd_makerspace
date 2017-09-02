@@ -5,15 +5,16 @@ $(document).ready(function() {
     console.log('caught check_user')
     event.preventDefault();
     event.stopPropagation();
-    $('#input_null').empty();
+    //$('#input_null').empty();
     var input = $('input[name=pid]').val();
     $(this).closest('form').find("input[name=pid], textarea").val("");
     console.log(input);
     if(!input) {
-      $('#input_null').text("Fill out this field");
+      $('#pid_field').focus();
+      //$('#input_null').text("Fill out this field");
       return false;
     } else {
-      $('#input_null').empty();
+      //$('#input_null').empty();
     }
     $('.page.dimmer').addClass('active');
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
@@ -29,9 +30,9 @@ $(document).ready(function() {
         resp = JSON.parse(content);
         console.log(resp);
         if(resp['status'] == 'OK') {
-          $('.page.dimmer').removeClass('active');
           $('#username').text(resp['data']);
           $('#welcome_page').fadeOut('fast');
+          $('.page.dimmer').removeClass('active');
           $('#authorized_page').removeClass('page_hide');
           var timeleft = 10;
           var downloadTimer = setInterval(function(){
@@ -51,6 +52,7 @@ $(document).ready(function() {
           },10000);
         } else {
           $('.text.loader').addClass('disabled');
+          $('#welcome_page').css('opacity','0.2');
           if(resp['status'] == 'ERROR') {
             $('.alert').text(resp['data']);
           } else if (resp['status'] == 'NOK') {
@@ -59,6 +61,7 @@ $(document).ready(function() {
             $('.alert').text("You're UNAUTHORIZED. Please fulfill the online requirements to get access.");
           }
           setTimeout(function() {
+            $('#welcome_page').css('opacity','1');
             $('.alert').empty();
             $('.text.loader').removeClass('disabled');
             $('.page.dimmer').removeClass('active');
