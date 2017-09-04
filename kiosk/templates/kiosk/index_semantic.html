@@ -13,13 +13,13 @@
 
 <main id="welcome_page">
   <section>
-    <div class="ui center aligned container ta_intro_80 red_bckgnd">
+    <div class="ui center aligned container intro_80 red_bckgnd">
       <h1 class="ui text_white huge header" style="padding:1em;font-size:4em" >Welcome to ECE Makerspace</h1>
       <h3 class="ui text_white large header" style="font-size:7em"> SIGN IN BY SWIPING YOUR UC SAN DIEGO CARD </h3>
     </div>
   </section>
 
-  <section class="ui center aligned container ta_intro_20 grey_bckgnd">
+  <section class="ui center aligned container intro_20 grey_bckgnd">
   <form action='' method='POST'style="top:30%;position:relative"> {% csrf_token %}
     <div class="ui vertically divided grid">
       <div class="two column row">
@@ -48,56 +48,44 @@
 <main id="authorized_page" class="page_hide">
 
   <section>
-    <div class="ui center aligned container intro grey_bckgnd">
-      <h1 class="ui orange huge header" style="padding:1em;">Welcome <span id='username'></span>, Please ENTER</h1>
-      <h3 class="ui orange large header">Kindly enter the lab in next <span id='countdowntimer'>10</span>  seconds. </h3>
+    <div class="ui center aligned container intro_66 peach_bckgnd">
+      <h1 class="ui text_red huge header" style="padding:1em;font-size:3em">Welcome <span id='username'></span>, Kindly enter in </h1>
+      <div class="ui red_bckgnd timer_border">
+        <p class='ui countdowntimer text_white' id="countdown_ctrl">15</p>
+        <p class='ui time_unit text_white'>seconds</p>
+      </div>
     </div>
   </section>
 
-  <section class=" ui center aligned container intro">
+  <section class=" ui center aligned container intro_33 grey_bckgnd">
     <div class="ui vertically divided grid" style="padding-top:1em;">
       <div class="two column row">
         <div class="column">
-          <p class="ta_font">TA 1: First_Name Last_Name</p>
+          <p class="ui ta_font text_midblue">TA 1: First_Name Last_Name</p>
           <img class="ui centered small image" src = "{% static "kiosk/images/tyrion_ta.jpeg" %}" alt="QR code"/>
         </div>
         <div class="column">
-          <p class="ta_font">TA 2: First_Name Last_Name</p>
+          <p class="ui ta_font text_midblue">TA 2: First_Name Last_Name</p>
           <img class="ui centered small image" src = "{% static "kiosk/images/sansa_ta.jpeg" %}" alt="QR code"/>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="ui center aligned container intro grey_bckgnd">
-  <div class="ui center aligned container intro">
-    <h1 class="ui olive huge header" style="padding:1em;">Please Remember</h1>
-    <ol class="ui list">
-      <li value="*">No FOOD including
-        <ol>
-          <li value="-">Covered Coffee</li>
-          <li value="-">Covered Food</li>
-          <li value="-">Snacks</li>
-        </ol>
-      </li>
-      <li value="*">Be curteous to TA</li>
-    </ol>
-  </div>
-  </section>
 </main>
 
 <main id="ta_page" class="page_hide">
 
   <section class=" ui center aligned container ta_intro_66 grey_bckgnd">
-    <h1 class="ui orange huge header" style="padding:1em;">TA Assistance has been requested. You can expect: </h1>
-    <div class="ui vertically divided grid olive">
+    <h1 class="ui text_red huge header" style="padding:1em;font-size:3em">TA assistance has been requested. You can expect: </h1>
+    <div class="ui vertically divided grid">
       <div class="two column row">
         <div class="column">
-          <p class="ta_font">TA 1: First_Name Last_Name</p>
+          <p class="ui ta_font text_midblue">TA 1: First_Name Last_Name</p>
           <img class="ui centered medium image" src = "{% static "kiosk/images/tyrion_ta.jpeg" %}" alt="QR code"/>
         </div>
         <div class="column">
-          <p class="ta_font">TA 2: First_Name Last_Name</p>
+          <p class="ui ta_font text_midblue">TA 2: First_Name Last_Name</p>
           <img class="ui centered medium image" src = "{% static "kiosk/images/sansa_ta.jpeg" %}" alt="QR code"/>
         </div>
       </div>
@@ -106,7 +94,7 @@
 
   <section class="ui center aligned container ta_intro_33">
   <div class="ui center aligned container intro">
-    <h1 class="ui olive huge header" style="padding:1em;">Please be patient and courteous </h1>
+    <h1 class="ui text_red huge header" style="padding:2em;font-size:3em">Please be patient and courteous </h1>
   </div>
   </section>
 </main>

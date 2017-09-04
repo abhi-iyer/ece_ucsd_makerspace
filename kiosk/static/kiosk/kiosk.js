@@ -34,13 +34,13 @@ $(document).ready(function() {
           $('#welcome_page').fadeOut('fast');
           $('.page.dimmer').removeClass('active');
           $('#authorized_page').removeClass('page_hide');
-          var timeleft = 10;
+          var timeleft = 15;
           var downloadTimer = setInterval(function(){
             timeleft--;
-            $("#countdowntimer").text(timeleft);
+            $("#countdown_ctrl").text(timeleft);
             if(timeleft <= 0) {
               clearInterval(downloadTimer);
-              $("#countdowntimer").text('10');
+              $("#countdown_ctrl").text('15');
             }
           },1000);
           setTimeout(function() {
@@ -49,7 +49,7 @@ $(document).ready(function() {
               $('#pid_field').focus();
             });
             $('#username').empty();
-          },10000);
+          },15000);
         } else {
           $('.text.loader').addClass('disabled');
           $('#welcome_page').css('opacity','0.2');
