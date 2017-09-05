@@ -7,7 +7,7 @@ from threading import Timer
 from collections import deque
 import signal
 import sys
-
+from kiosk.signals import disable_entrance_timer
 class SensorHandler:
   class __MyOnlySensorHandler:
     def __init__(self):
@@ -26,6 +26,7 @@ class SensorHandler:
       self.threshold_distance_first = None
       self.threshold_distance_second = None
       self.read_sensor_timer = None
+      self.alarm_state_timer = None
 
   instance = None
   def __init__(self):
@@ -52,8 +53,8 @@ class SensorHandler:
     #  self.instance.read_sensor_timer = None
     print("sleep_alarm: alarm state set to " + str(self.instance.alarm_state))
     #print ("switch_time is ",halt_time,sep='')
-    t = Timer(halt_time, self.set_alarm)
-    t.start()
+    self.instance.alarm_state_timer = Timer(halt_time, self.set_alarm)
+    self.instance.alarm_state_timer.start()
 
   def set_alarm(self):
     '''
@@ -75,8 +76,14 @@ class SensorHandler:
       print ("called the alarm function; yipeee")
       call(["omxplayer", "--vol", "-2400", "-o", "local", "justwhat.mp3"])
     else :
-      print ("Speaker turned off")
-
+      print ("Speaker turned OFF")
+      disable_entrance_timer.send(sender=None)
+      self.instance.alarm_state = 1
+      if self.instance.alarm_state_timer:
+        self.instance.alarm_state_timer.cancel()
+        self.instance.alarm_state_timer = None
+      print ("Speaker turning back ON")
+      
   def read_sensor_distance(self,TRIG,ECHO):
     '''
     Description: Returns ultrasound sensor reading for given GPIO pin pairs
