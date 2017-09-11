@@ -33,14 +33,15 @@ $(document).ready(function() {
           $('#username').text(resp['data']);
           $('#welcome_page').fadeOut('fast');
           $('.page.dimmer').removeClass('active');
+          var max_time = 15;
+          $("#countdown_ctrl").text(max_time);
           $('#authorized_page').removeClass('page_hide');
-          var timeleft = 15;
+          var timeleft = max_time;
           var downloadTimer = setInterval(function(){
             timeleft--;
             $("#countdown_ctrl").text(timeleft);
             if(timeleft <= 0) {
               clearInterval(downloadTimer);
-              $("#countdown_ctrl").text('15');
             }
           },1000);
           setTimeout(function() {
@@ -49,7 +50,7 @@ $(document).ready(function() {
               $('#pid_field').focus();
             });
             $('#username').empty();
-          },15000);
+          },max_time*1000);
         } else {
           $('.text.loader').addClass('disabled');
           $('#welcome_page').css('opacity','0.2');

@@ -25,8 +25,8 @@ def user_info(request):
                 log.save()
 
                 #sending notification to RPi
-                hold_time = 10 #circuit disable time in seconds
-                print ("Notifying to switch off sensor for 10 seconds")
+                hold_time = 15 #circuit disable time in seconds
+                print ("Notifying to switch off sensor for %d seconds"%hold_time)
                 turn_off_sensor.send(sender=None,switch_time=hold_time)
 
                 return HttpResponse(json.dumps(data))
