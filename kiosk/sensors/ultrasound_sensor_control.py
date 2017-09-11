@@ -82,8 +82,9 @@ class SensorHandler:
       if self.instance.alarm_state_timer:
         self.instance.alarm_state_timer.cancel()
         self.instance.alarm_state_timer = None
+        print ("disabled alarm_state_timer")
       print ("Speaker turning back ON")
-      
+
   def read_sensor_distance(self,TRIG,ECHO):
     '''
     Description: Returns ultrasound sensor reading for given GPIO pin pairs
@@ -209,7 +210,7 @@ class SensorHandler:
   def start_reading(self):
     '''
     Description: Method is called every self.instance.sample_rate(default:0.05) seconds;
-    It checks for sensor being triggered and based on past readings; decipher if 
+    It checks for sensor being triggered and based on past readings; decipher if
     there has been an intrusion or not; If yes, take necessary steps.
     '''
     #print "----------------------------------------------------------------------"
@@ -237,7 +238,7 @@ class SensorHandler:
         self.instance.sensor_last_active = 0
         self.instance.read_sensor_timer = Timer(3,self.entrance_clear)
         self.instance.read_sensor_timer.start()
-    
+
     elif(status_second and (self.instance.sensor_last_active!=2)):
       self.instance.sensor_last_active = 2
       sensor_first_sum = sum(self.instance.sensor_first_past)
@@ -249,7 +250,7 @@ class SensorHandler:
         self.instance.sensor_last_active = 0
         self.instance.read_sensor_timer = Timer(3,self.entrance_clear)
         self.instance.read_sensor_timer.start()
-    
+
     else:
       pass
 
