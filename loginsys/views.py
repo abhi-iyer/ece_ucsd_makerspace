@@ -6,7 +6,9 @@ import time
 from datetime import datetime
 from .models import *
 from django.utils import timezone
-from kiosk.signals import turn_off_sensor
+from loginsys.signals import turn_off_sensor
+from loginsys import settings
+
 def index(request):
     context = {'title': 'Main Login'}
     return render(request, 'loginsys/index.html', context)
@@ -23,11 +25,10 @@ def user_info(request):
 
                 log = AdminLog(user=the_user, administrator = the_user.currently_administrator, date=timezone.now(), login_status=AdminLog.SUCCESS)
                 log.save()
-
+                settings.kiosk_entry_status = 0 #expecting to be 1 as soon as user enter
                 #sending notification to RPi
-                hold_time = 15 #circuit disable time in seconds
-                print ("Notifying to switch off sensor for %d seconds"%hold_time)
-                turn_off_sensor.send(sender=None,switch_time=hold_time)
+                print ("Notifying to switch off sensor for %d seconds"% settings.HOLD_TIME)
+                turn_off_sensor.send(sender=None,switch_time=settings.HOLD_TIME)
 
                 return HttpResponse(json.dumps(data))
               else:  # the_user is suspended
@@ -54,3 +55,7 @@ def user_info(request):
             return HttpResponse(json.dumps(data))
     else:
         return HttpResponse('Please enter your PID in the appropriate field, not in the URL.')
+
+def kiosk_entry_status(request):
+  data = {'status':settings.kiosk_entry_status}
+  return HttpResponse(json.dumps(data))

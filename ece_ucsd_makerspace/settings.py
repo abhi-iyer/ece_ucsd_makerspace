@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'loginsys',
+    'loginsys.apps.LoginsysConfig',
     'kiosk.apps.KioskConfig',
     'django_cron',
 ]

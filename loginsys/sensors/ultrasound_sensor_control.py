@@ -7,7 +7,7 @@ from threading import Timer
 from collections import deque
 import signal
 import sys
-from kiosk.signals import disable_entrance_timer
+from loginsys.signals import disable_entrance_timer
 class SensorHandler:
   class __MyOnlySensorHandler:
     def __init__(self):
@@ -35,10 +35,11 @@ class SensorHandler:
 
   def interrupt_signal_handler(self,signal,frame):
     print("Measurement stopped by User")
-    GPIO.cleanup()
     if self.instance.read_sensor_timer:
+      print ('check_this_out')
       self.instance.read_sensor_timer.cancel()
       self.instance.read_sensor_timer = None
+    GPIO.cleanup()
     sys.exit(0)
 
   def sleep_alarm(self,halt_time):
@@ -74,7 +75,7 @@ class SensorHandler:
     '''
     if self.instance.alarm_state == 1:
       print ("called the alarm function; yipeee")
-      call(["omxplayer", "--vol", "-2400", "-o", "local", "justwhat.mp3"])
+      call(["omxplayer", "--vol", "-1200", "-o", "local", "justwhat.mp3"])
     else :
       print ("Speaker turned OFF")
       disable_entrance_timer.send(sender=None)

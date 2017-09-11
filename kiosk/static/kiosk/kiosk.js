@@ -38,19 +38,38 @@ $(document).ready(function() {
           $('#authorized_page').removeClass('page_hide');
           var timeleft = max_time;
           var downloadTimer = setInterval(function(){
+            $.ajax({
+              type: 'GET',
+              url : '/loginsys/kiosk_entry_status',
+              success : function(content) {
+                entry_stts = JSON.parse(content);
+                console.log(entry_stts);
+                if(entry_stts['status'] == '1') {
+                  clearInterval(downloadTimer);
+                  console.log('timer cleared')
+                  $('#authorized_page').addClass('page_hide');
+                  $('#welcome_page').fadeIn('slow',function() {
+                    $('#pid_field').focus();
+                  });
+                  $('#username').empty();
+                }
+              },
+              error : function(content) {
+              },
+              complete : function() {
+              }
+            });
             timeleft--;
             $("#countdown_ctrl").text(timeleft);
             if(timeleft <= 0) {
               clearInterval(downloadTimer);
+              $('#authorized_page').addClass('page_hide');
+              $('#welcome_page').fadeIn('slow',function() {
+                $('#pid_field').focus();
+              });
+              $('#username').empty();
             }
           },1000);
-          setTimeout(function() {
-            $('#authorized_page').addClass('page_hide');
-            $('#welcome_page').fadeIn('slow',function() {
-              $('#pid_field').focus();
-            });
-            $('#username').empty();
-          },max_time*1000);
         } else {
           $('.text.loader').addClass('disabled');
           $('#welcome_page').css('opacity','0.2');

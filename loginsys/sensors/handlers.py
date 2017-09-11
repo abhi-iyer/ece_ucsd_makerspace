@@ -1,4 +1,4 @@
-from kiosk.sensors import main_handler
+from loginsys.sensors import main_handler
 '''
 Usage:
 1) Sets up benchmark readings(idle_distance with no obstruction/intrusion)
