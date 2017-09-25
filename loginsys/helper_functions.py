@@ -10,6 +10,12 @@ def get_user(pid):
     except:
         return None #No entry
 
+def get_supervisor_status(user_info):
+    try:
+        supervisor = Supervisor_Duty.objects.filter(user=user_info).last()
+        return supervisor
+    except:
+        return None #No entry so probably make one
 def card_parse(input):
     if input:
         if ( input[0] == ';' ):

@@ -29,6 +29,12 @@ $(document).ready(function() {
         console.log('success');
         resp = JSON.parse(content);
         console.log(resp);
+        $('.second_supervisor').attr('src',function(){ 
+          var image_part = this.src.split('/'); 
+          var existing = image_part[image_part.length - 1];
+          console.log(existing);
+          $(this).attr('src',$(this).attr('src').replace(existing,'sansa_ta.jpeg'));
+        });
         if(resp['status'] == 'OK') {
           $('#username').text(resp['data']);
           $('#welcome_page').fadeOut('fast');
@@ -70,16 +76,20 @@ $(document).ready(function() {
               $('#username').empty();
             }
           },1000);
-        } else {
+        } else if (resp['status'] == 'Admin') {
+          console.log('Caught in else if');
           $('.text.loader').addClass('disabled');
           $('#welcome_page').css('opacity','0.2');
-          if(resp['status'] == 'ERROR') {
-            $('.alert').text(resp['data']);
-          } else if (resp['status'] == 'NOK') {
-            $('.alert').text(resp['data']);
-          } else { 
-            $('.alert').text("You're UNAUTHORIZED. Please fulfill the online requirements to get access.");
-          }
+          $('.alert').text(resp['data']);
+          $('#opt_yes').removeClass('page_hide');
+          $('#opt_no').removeClass('page_hide');
+          $('.alert').text(resp['data']);
+        } else {
+          console.log('Caught in else');
+          $('.text.loader').addClass('disabled');
+          $('#welcome_page').css('opacity','0.2');
+          $('.alert').text(resp['data']);
+
           setTimeout(function() {
             $('#welcome_page').css('opacity','1');
             $('.alert').empty();
@@ -111,6 +121,11 @@ $(document).ready(function() {
       });
     }, 5000);
     return false;
+  });
+  $('#opt_yes').on('click',function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
   });
 });
 function csrfSafeMethod(method) {
