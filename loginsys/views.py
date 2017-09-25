@@ -39,7 +39,6 @@ def supervisor_info(request):
           data['status'] = 'Exit'
           supervisor_update = 1
           #add supervisor exit log in supervisor_info database
-          #return to homepage
         
         if (supervisor_update == 1):
           #Query supervisor_info database to get last two on duty supervisor(First and last name(to be used in HTML tags))
@@ -62,7 +61,7 @@ def user_info(request):
                 #Do supervisor log in/log out system management here
                 if (the_user.currently_administrator == True):
                   supervisor_info = get_supervisor_status(the_user)
-                  if ((supervisor_info == None) or (supervisor_info.onduty == False)):
+                  if (the_user.supervisor_active == False):
                     supervisor_check['supervisor'] = supervisor_info
                     supervisor_check['checking'] = 'IN'
                     data = {'status':'Admin', 'data':'Do you want to Sign in as a Supervisor ???'} 
