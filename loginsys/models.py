@@ -14,6 +14,14 @@ class User(models.Model):
         def __str__(self):
             return '%s %s' % (self.first_name, self.last_name)
 
+class Supervisor_Duty(models.Model):
+        user = models.ForeignKey(User, default=None, null=True)
+        onduty = models.BooleanField(default=False)
+        time = models.DateTimeField()
+        
+        def __str__(self):
+            return 'Supervisor: %s %s Status: %s Time: %s' % (self.user.first_name, self.user.last_name, self.onduty, self.time.strftime("%Y-%m-%d %H:%M:%S"))
+
 class AdminLog(models.Model):
         user = models.ForeignKey(User, default=None, null=True)
 

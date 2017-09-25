@@ -31,7 +31,6 @@ li {
 }
 /* The alert message box */
 .alert {
-    /*background-color: #f44336;  Red */
   color: white;
   font-size: 4em;
   opacity:1;
