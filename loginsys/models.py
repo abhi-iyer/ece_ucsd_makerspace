@@ -10,7 +10,7 @@ class User(models.Model):
         class_year = models.CharField(max_length=15, null=True)
         currently_administrator = models.BooleanField(default=False)
         currently_suspended = models.BooleanField(default=False)
-        supervisor_active = models.BoolenField(default=False)
+        supervisor_active = models.BooleanField(default=False)
         def __str__(self):
             return '%s %s' % (self.first_name, self.last_name)
 

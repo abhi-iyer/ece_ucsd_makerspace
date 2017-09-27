@@ -32,7 +32,7 @@ $(document).ready(function() {
           console.log(existing);
           $(this).attr('src',$(this).attr('src').replace(existing,'sansa_ta.jpeg'));
         });
-        if(resp['status'] == 'OK') {
+        if(resp['status'] == 'STUDENT') {
           $('#username').text(resp['data']);
           $('#welcome_page').fadeOut('fast');
           $('.page.dimmer').removeClass('active');
@@ -73,19 +73,20 @@ $(document).ready(function() {
               $('#username').empty();
             }
           },1000);
-        } else if (resp['status'] == 'Admin') {
+        } else if (resp['status'] == 'ADMIN') {
           console.log('Caught in else if');
           $('.text.loader').addClass('disabled');
           $('#welcome_page').css('opacity','0.2');
           $('.alert').text(resp['data']);
           $('#user_option').removeClass('page_hide');
-        } else if (resp['status'] == 'Home') {
+        } else if (resp['status'] == 'HOME') {
           console.log('Caught in else if Home condition');
           $('#welcome_page').css('opacity','1');
           $('.alert').empty();
           $('#user_option').addClass('page_hide');
           $('.text.loader').removeClass('disabled');
           $('.page.dimmer').removeClass('active');
+          update_supervisor(resp['ta_active']);
         } else {
           console.log('Caught in else');
           $('.text.loader').addClass('disabled');
@@ -163,4 +164,8 @@ function send_server_supervisor_response(user_opt) {
     complete: function() {
     }
   });
+}
+
+function update_supervisor(supervisor_name_list) {
+  console.log('updating html to show new supervisor');
 }
