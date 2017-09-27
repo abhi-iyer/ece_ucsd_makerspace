@@ -11,11 +11,8 @@ $(document).ready(function() {
     console.log(input);
     if(!input) {
       $('#pid_field').focus();
-      //$('#input_null').text("Fill out this field");
       return false;
-    } else {
-      //$('#input_null').empty();
-    }
+    } 
     $('.page.dimmer').addClass('active');
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     $.ajax( {
@@ -81,9 +78,14 @@ $(document).ready(function() {
           $('.text.loader').addClass('disabled');
           $('#welcome_page').css('opacity','0.2');
           $('.alert').text(resp['data']);
-          $('#opt_yes').removeClass('page_hide');
-          $('#opt_no').removeClass('page_hide');
-          $('.alert').text(resp['data']);
+          $('#user_option').removeClass('page_hide');
+        } else if (resp['status'] == 'Home') {
+          console.log('Caught in else if Home condition');
+          $('#welcome_page').css('opacity','1');
+          $('.alert').empty();
+          $('#user_option').addClass('page_hide');
+          $('.text.loader').removeClass('disabled');
+          $('.page.dimmer').removeClass('active');
         } else {
           console.log('Caught in else');
           $('.text.loader').addClass('disabled');
@@ -125,10 +127,40 @@ $(document).ready(function() {
   $('#opt_yes').on('click',function(event) {
     event.preventDefault();
     event.stopPropagation();
-    
+    send_server_supervisor_response('YES');  
+    return false;
+  });
+  $('#opt_no').on('click',function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    send_server_supervisor_response('NO');  
+    return false;
   });
 });
 function csrfSafeMethod(method) {
   // these HTTP methods do not require CSRF protection
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function send_server_supervisor_response(user_opt) {
+  console.log(user_opt);
+  console.log('at least here');
+  var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  $.ajax( {
+    type: 'POST',
+    url : '/loginsys/supervisor_info',
+    data : { 
+      'option' : user_opt,
+      'csrfmiddlewaretoken':csrftoken,
+    }, 
+    success : function (content) {
+      
+    },
+    error: function(content) {
+      console.log('failure');
+      console.log(content);
+    },
+    complete: function() {
+    }
+  });
 }

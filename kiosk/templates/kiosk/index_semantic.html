@@ -8,8 +8,12 @@
   <div class="ui text loader"> Checking your Entry </div>
   <div class="content">
     <p class="alert"></p>
-    <input type="button" value="YES" class="ui grey submit button huge page_hide" id="opt_yes"> YES </button>
-    <button class="ui grey submit button huge page_hide" id="opt_no"> NO </button>
+    <form action='' method='POST' > {% csrf_token %}
+      <div id='user_option' class='page_hide'>
+        <button class="ui grey submit button huge" id="opt_yes"> YES </button>
+        <button class="ui grey submit button huge" id="opt_no"> NO </button>
+      </div>
+    </form>
     </div>
   </div>
 </div> 
