@@ -25,9 +25,15 @@ def supervisor_info(request):
           data['status'] = 'ADMIN_IN' 
           #Supervisor entering
           #Abhi: set supervisor_active in User as True
+          
+          user.supervisor_active = True
+
           #log supervisor entry in Supervisor_Duty table
           log = AdminLog(user=user, administrator = True, date=timezone.now(), login_status=AdminLog.SUCCESS)
           #Abhi: create a new function (eg. get_active_supervisor) (see sample below) this function will be called bcoz active TA's just changed
+
+
+          
           #data = get_active_supervisor()
         else:
           data['status'] = 'STUDENT_IN' 
@@ -61,7 +67,7 @@ def user_info(request):
                     settings.supervisor_check = supervisor_info
                     data = {'status':'ADMIN', 'data':'Do you want to Sign in as a Supervisor ???'} 
                     return HttpResponse(json.dumps(data))
-                  else :
+                  else:
                     #Supervisor exiting 
                     the_user.supervisor_active = False
                     #also log supervisor exit in Supervisor_Duty table
@@ -109,8 +115,20 @@ def kiosk_entry_status(request):
   return HttpResponse(json.dumps(data))
 
 def get_active_supervisor():
-  #Abhi return a dictionary containing ta active names;
-  #You will get data by quering User database and checking for supervisor_active as True
-  #sample_data = {ta_active:'first_name,last_name;first_name,last_name'}
-  #return sample_data
+
+  list_users = User.objects.get(currently_administrator=True)
+  current_supervisors = []
+
+  list_names = ""
+
+  for user in list_users:
+    if (user.supervisor_active == True):
+      current_supervisors.append(user)
+          
+
+  for user in current_supervisors:
+    list_names += user.first_name + "," + user.last_name + ";"
+
+  sample_data = {'ta_active':list_names}
+
   pass
