@@ -18,27 +18,26 @@ def supervisor_info(request):
         #this could be yes or no to the question asked when supervisor swipe in
         print ('option received is ',option)
         #In this method we are checking admin has logged in as student or supervisor
-        user = settings.supervisor_check.user
+        user = settings.supervisor_check
         data = {'data':user.first_name + " " + user.last_name}
         
         if (option == 'YES'):
           data['status'] = 'ADMIN_IN' 
           #Supervisor entering
-          #Abhi: set supervisor_active in User as True
-          
           user.supervisor_active = True
-
+          user.save()
           #log supervisor entry in Supervisor_Duty table
+          supervisor = Supervisor_Duty(user = user,onduty=True,time = timezone.now())
+          supervisor.save()
           log = AdminLog(user=user, administrator = True, date=timezone.now(), login_status=AdminLog.SUCCESS)
-          #Abhi: create a new function (eg. get_active_supervisor) (see sample below) this function will be called bcoz active TA's just changed
-
-
           
-          #data = get_active_supervisor()
+          #Updating active TA list because another TA just joined in
+          ta_data = get_active_supervisor()
+          data['ta_active'] = ta_data
+          print ("String passed to jQuery is ", data)
         else:
           data['status'] = 'STUDENT_IN' 
           #supervisor entering as student
-          #Nothign to add here
           log = AdminLog(user=user, administrator = False, date=timezone.now(), login_status=AdminLog.SUCCESS)
           
         log.save()
@@ -61,19 +60,22 @@ def user_info(request):
               if (the_user.currently_suspended != True): # the_user is not suspended
                 #supervisor log in/log out system management here
                 if (the_user.currently_administrator == True):
-                  supervisor_info = get_supervisor_status(the_user)
                   if (the_user.supervisor_active == False):
                     #supervisor entering(might be as a student)
-                    settings.supervisor_check = supervisor_info
+                    settings.supervisor_check = the_user
                     data = {'status':'ADMIN', 'data':'Do you want to Sign in as a Supervisor ???'} 
                     return HttpResponse(json.dumps(data))
                   else:
                     #Supervisor exiting 
                     the_user.supervisor_active = False
+                    the_user.save()
                     #also log supervisor exit in Supervisor_Duty table
+                    supervisor = Supervisor_Duty(user = the_user,onduty=False,time = timezone.now())
+                    supervisor.save()
                     data = {'status':'HOME'}
-                    #Abhi: create a new function (eg. get_active_supervisor) (see sample below) this function will be called bcoz active TA's just changed
-                    #data = get_active_supervisor()
+                    ta_data = get_active_supervisor()
+                    data['ta_active'] = ta_data
+                    print ("String passed to jQuery is ", data)
                     return HttpResponse(json.dumps(data))
 
                 data = {'status':'STUDENT', 'data':the_user.first_name + " " + the_user.last_name}
@@ -116,7 +118,7 @@ def kiosk_entry_status(request):
 
 def get_active_supervisor():
 
-  list_users = User.objects.get(currently_administrator=True)
+  list_users = User.objects.filter(currently_administrator=True)
   current_supervisors = []
 
   list_names = ""
@@ -125,10 +127,7 @@ def get_active_supervisor():
     if (user.supervisor_active == True):
       current_supervisors.append(user)
           
-
   for user in current_supervisors:
     list_names += user.first_name + "," + user.last_name + ";"
-
-  sample_data = {'ta_active':list_names}
-
-  pass
+  #stripping last ';' before sending back data
+  return list_names[:-1]

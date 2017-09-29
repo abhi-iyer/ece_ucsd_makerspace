@@ -26,53 +26,10 @@ $(document).ready(function() {
         console.log('success');
         resp = JSON.parse(content);
         console.log(resp);
-        $('.second_supervisor').attr('src',function(){ 
-          var image_part = this.src.split('/'); 
-          var existing = image_part[image_part.length - 1];
-          console.log(existing);
-          $(this).attr('src',$(this).attr('src').replace(existing,'sansa_ta.jpeg'));
-        });
         if(resp['status'] == 'STUDENT') {
-          $('#username').text(resp['data']);
-          $('#welcome_page').fadeOut('fast');
-          $('.page.dimmer').removeClass('active');
-          var max_time = 15;
-          $("#countdown_ctrl").text(max_time);
-          $('#authorized_page').removeClass('page_hide');
-          var timeleft = max_time;
-          var downloadTimer = setInterval(function(){
-            $.ajax({
-              type: 'GET',
-              url : '/loginsys/kiosk_entry_status',
-              success : function(content) {
-                entry_stts = JSON.parse(content);
-                console.log(entry_stts);
-                if(entry_stts['status'] == '1') {
-                  clearInterval(downloadTimer);
-                  console.log('timer cleared')
-                  $('#authorized_page').addClass('page_hide');
-                  $('#welcome_page').fadeIn('slow',function() {
-                    $('#pid_field').focus();
-                  });
-                  $('#username').empty();
-                }
-              },
-              error : function(content) {
-              },
-              complete : function() {
-              }
-            });
-            timeleft--;
-            $("#countdown_ctrl").text(timeleft);
-            if(timeleft <= 0) {
-              clearInterval(downloadTimer);
-              $('#authorized_page').addClass('page_hide');
-              $('#welcome_page').fadeIn('slow',function() {
-                $('#pid_field').focus();
-              });
-              $('#username').empty();
-            }
-          },1000);
+          
+          handle_user_entrance(resp);
+
         } else if (resp['status'] == 'ADMIN') {
           console.log('Caught in else if');
           $('.text.loader').addClass('disabled');
@@ -82,10 +39,13 @@ $(document).ready(function() {
         } else if (resp['status'] == 'HOME') {
           console.log('Caught in else if Home condition');
           $('#welcome_page').css('opacity','1');
+          $('#welcome_page').fadeOut('fast');
           $('.alert').empty();
           $('#user_option').addClass('page_hide');
           $('.text.loader').removeClass('disabled');
           $('.page.dimmer').removeClass('active');
+          $('#welcome_page').fadeIn('fast');
+          $('#pid_field').focus();
           update_supervisor(resp['ta_active']);
         } else {
           console.log('Caught in else');
@@ -142,7 +102,6 @@ function csrfSafeMethod(method) {
   // these HTTP methods do not require CSRF protection
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
-
 function send_server_supervisor_response(user_opt) {
   console.log(user_opt);
   console.log('at least here');
@@ -155,7 +114,16 @@ function send_server_supervisor_response(user_opt) {
       'csrfmiddlewaretoken':csrftoken,
     }, 
     success : function (content) {
-      
+      console.log('success');
+      resp = JSON.parse(content);
+      console.log(resp);
+      if(resp['status'] == 'STUDENT_IN') {
+        handle_user_entrance(resp);
+      } else {
+        console.log(resp['status']);
+        update_supervisor(resp['ta_active']);
+        handle_user_entrance(resp);
+      }
     },
     error: function(content) {
       console.log('failure');
@@ -165,7 +133,65 @@ function send_server_supervisor_response(user_opt) {
     }
   });
 }
-
 function update_supervisor(supervisor_name_list) {
   console.log('updating html to show new supervisor');
+  $('.supervisor_display').empty();
+  if (supervisor_name_list == '') {
+    return
+  }
+  console.log(supervisor_name_list);
+  var supervisor_name = supervisor_name_list.split(';');
+  $(supervisor_name).each(function(index) {
+    console.log(index + ' : ' + supervisor_name[index]);
+    var name = supervisor_name[index].split(',');
+    name_underscore = name[0] + "_" + name[1];
+    name_space = name[0] + " " + name[1];
+    $('.supervisor_display').append(
+    "<div class='column'><p class='ui ta_font text_midblue' id=''>" +  name_space + "</p><img class='ui centered small image' src =" + dummy_image_url + name_underscore+".jpg /></div>"
+    );  
+  }); 
+}
+function handle_user_entrance(resp) {
+  console.log(resp['data'])
+  var max_time = 15;
+  $("#countdown_ctrl").text(max_time);
+  $('.page.dimmer').removeClass('active');
+  $('#username').text(resp['data']);
+  $('#welcome_page').fadeOut('fast');
+  $('#authorized_page').removeClass('page_hide');
+  var timeleft = max_time;
+  var downloadTimer = setInterval(function(){
+    $.ajax({
+      type: 'GET',
+      url : '/loginsys/kiosk_entry_status',
+      success : function(content) {
+        entry_stts = JSON.parse(content);
+        console.log(entry_stts);
+        if(entry_stts['status'] == '1') {
+          clearInterval(downloadTimer);
+          console.log('timer cleared')
+          $('#authorized_page').addClass('page_hide');
+          $('#welcome_page').fadeIn('slow',function() {
+            $('#pid_field').focus();
+          });
+          $('#username').empty();
+        }
+      },
+      error : function(content) {
+      },
+      complete : function() {
+      }
+    });
+    timeleft--;
+    $("#countdown_ctrl").text(timeleft);
+    if(timeleft <= 0) {
+      clearInterval(downloadTimer);
+      $('#authorized_page').addClass('page_hide');
+      $('#welcome_page').css('opacity','1');
+      $('#welcome_page').fadeIn('fast',function() {
+        $('#pid_field').focus();
+      });
+      $('#username').empty();
+    }
+  },1000);
 }
