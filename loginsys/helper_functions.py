@@ -32,11 +32,17 @@ def card_parse(input):
     else:
         return 0
 
-def get_logs(date):
+def get_logs_date(date):
     try:
         log = AdminLog.objects.get(date=date)
         return log
     except:
         return None # no logs for specified day
-        
+
+def get_logs_user(user):
+    try: 
+        logs = AdminLog.objects.get(user=user)
+	return logs
+    except:
+	return None # no logs specified for student 
 
